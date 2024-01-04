@@ -1,0 +1,927 @@
+﻿@{
+    ViewBag.title = "지도자 등록";
+    Layout = "../Shared/_Layout.cshtml";
+    var ld = ViewBag.LeaderList;
+    var sc = ViewBag.SchoolList;
+    var sp = ViewBag.SportList;
+}
+
+<link href="~/css/Register.css" rel="stylesheet" type="text/css">
+<h4 class="title-heading">지도자 등록하기</h4>
+<div class="container" id="container1">
+    <div class="d-flex flex-column align-items-center">
+        <form action="" method="post" id="main_form">
+            <h4 class="section-heading1">1. 일반 현황(2023년 01월 01일 기준)<span class="required-field">* 필수입력값 항목입니다.</span><hr class="section-hr"></h4>
+            <div class="container custom-container">
+                <div class="row">
+                    <div class="col-sm-3 left-content">
+                        <div id="image-container">
+                            <label for="file-input" id="image-placeholder">
+                                <div id="upload-button">사진 첨부하기</div>
+                            </label>
+                            <!--프론트 단에서만 필요-->
+                            <input type="file" id="file-input" accept="image/*" value="">
+                            <!--컨트롤러로 보낼 데이터-->
+                            <input type="hidden" id="hidden-input" name="ImageBase" value="">
+                            <img id="selected-image" alt="">
+                            <p>파일 크기는 MB 이하로 등록해주세요.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-9 right-content">
+                        <div class="row custom-row">
+                            <div class="col-6 col-sm-6">
+                                <h8 id="code-heading" class="custom-heading">
+                                    식별코드<span class="highlight-text">*</span>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="식별코드를 선택해주세요." aria-label="식별코드를 선택해주세요." aria-describedby="button-Leader" name="LeaderNo" required>
+                                        <button class="btn btn-outline-secondary" type="button" id="button-Leader">식별코드검색</button>
+                                    </div>
+                                </h8>
+                            </div>
+                            <!-- 모달 창 -->
+                            <div id="LeaderModal" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2>지도자 식별코드 검색</h2>
+                                        <span class="close" onclick="closeModal">&times;</span>
+                                    </div>
+                                    <!-- 모달 내용 -->
+                                    <div class="search-container">
+                                        <p>성명</p>
+                                        <input type="text" id="leaderCodeInput" placeholder="이름을 입력해주세요.">
+                                        <button id="searchLeaderButton">검색하기</button>
+                                    </div>
+                                    <div id="leaderTable">
+                                        <h2>
+                                            총 지도자
+                                            <p id="totalLeaders">총</p>
+                                        </h2>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>번호</th>
+                                                    <th>이름</th>
+                                                    <th>식별코드</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="leaderTable_body"></tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="button-box2 ">
+                                        <div class="button delete2" id="cancelleaders">취소하기</div>
+                                        <div class="button register2" id="registerleaders">등록하기</div>
+                                        <div id="registerPopup1" class="popup">
+                                            <h2>선택된 식별코드 없음</h2>
+                                            <span class="close" onclick="closePopup('registerPopup1')">&times;</span>
+                                            <p>선택된 지도자 식별코드가 없습니다. </br>지도자 식별코드를 선택해주시기 바랍니다.</p>
+                                            <button class="confirm">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-6">
+                                <h8 id="school-heading" class="custom-heading">
+                                    학교명<span class="highlight-text">*</span>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="schoolcode-heading" placeholder="학교명을 선택해주세요." aria-label="학교명을 선택해주세요." aria-describedby="button-addon-School" required>
+                                        <input type="hidden" id="hidden-SchoolName" name="SchoolNo" />
+                                        <button class="btn btn-outline-secondary" type="button" id="button-addon-School">학교명검색</button>
+                                    </div>
+                                </h8>
+                            </div>
+                            <div id="SchoolModal" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2>학교 식별코드 검색</h2>
+                                        <span class="close" onclick="closeModal('SchoolModal')">&times;</span>
+                                    </div>
+                                    <!-- 모달 내용 -->
+                                    <div class="search-container2">
+                                        <p>학교명</p>
+                                        <input type="text" id="schoolCodeInput" placeholder="학교명을 입력해주세요.">
+                                        <button id="searchSchoolButton">검색하기</button>
+                                    </div>
+                                    <div id="schoolTable">
+                                        <h2>
+                                            총 학교
+                                            <p id="totalSchool">총</p>
+                                        </h2>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>번호</th>
+                                                    <th>학교명</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="schoolTable_body"></tbody>
+                                        </table>
+                                    </div>
+                                    <div class="button-box3">
+                                        <div class="button delete3" id="cancelSchool">취소하기</div>
+                                        <div class="button register3" id="registerSchool">등록하기</div>
+                                        <div id="registerPopup2" class="popup">
+                                            <h2>선택된 학교 없음</h2>
+                                            <span class="Schoolclose" onclick="closePopup('registerPopup2')">&times;</span>
+                                            <p>선택된 학교명이 없습니다. </br>학교명을 선택해주시기 바랍니다.</p>
+                                            <button class="confirm">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row custom-row">
+                            <div class="col-4 col-sm-4">
+                                <h8 id="name-heading" class="custom-heading">
+                                    성명<span class="highlight-text">*</span>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="form-control name-input" placeholder="이름을 입력하세요." name="LeaderName" required>
+                                    </div>
+                                </h8>
+                            </div>
+                            <div class="col-4 col-sm-4">
+                                <h8 id="dob-heading" class="custom-heading">
+                                    생년월일<span class="highlight-text">*</span>
+                                    <div class="mb-3">
+                                        <input type="date" class="form-control" id="birthdate" data-placeholder="생년월일을 입력해주세요." name="Birthday" required>
+                                    </div>
+                                </h8>
+                            </div>
+                            <div class="col-4 col-sm-4">
+                                <h8 id="gender-heading" class="custom-heading">
+                                    성별<span class="highlight-text">*</span>
+                                    <div class="gender-checkboxes">
+                                        <label>
+                                            <input type="radio" name="Gender" value="M" checked>
+                                            남자
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="Gender" value="W">
+                                            여자
+                                        </label>
+                                    </div>
+                                </h8>
+                            </div>
+                        </div>
+                        <div class="row custom-row">
+                            <div class="col-4 col-sm-4">
+                                <h8 id="sport-heading" class="custom-heading">
+                                    종목<span class="highlight-text">*</span>
+                                    <div class="sport-select">
+                                        <select class="form-select" aria-label="종목을 선택해주세요." id="sport-select-container1" name="SportNo">
+                                            <option value="">종목을 선택해주세요.</option>
+                                        </select>
+                                    </div>
+                                </h8>
+                            </div>
+                            <div class="col-4 col-sm-4">
+                                <h8 id="phone-heading" class="custom-heading">근무지 전화번호</h8><span class="highlight-text">*</span>
+                                <div class="d-inline-flex" id="tel-heading">
+                                    <input type="tel" size="3" name="tel1" class="form-control custom-input" placeholder="063" maxlength="3">
+                                    <span class="dash">-</span>
+                                    <input type="tel" size="4" name="tel2" class="form-control custom-input" placeholder="1234" maxlength="4">
+                                    <span class="dash">-</span>
+                                    <input type="tel" size="4" name="tel3" class="form-control custom-input" placeholder="5678" maxlength="4">
+                                    <input type="hidden" name="TelNo" id="hidden-tel">
+                                </div>
+                            </div>
+                            <div class="col-4 col-sm-4">
+                                <h8 id="hire-date-heading" class="custom-heading">
+                                    최초채용<span class="highlight-text">*</span>
+                                    <div class="mb-3">
+                                        <input type="date" class="form-control" id="hire" data-placeholder="최초채용일을 선택해주세요." name="EmpDT" required>
+                                        <p>최초 채용일은 <span class="highlight-text">전라북도 교육청 소속 최초 채용일을</span> 선택해주세요.</p>
+                                    </div>
+                                </h8>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h4 class="section-heading2">
+                2. 근무 이력(전라북도교육청 소속 - 최초 채용일로부터)<span class="required-field">필수입력값 항목입니다.</span><hr class="section-hr">
+                <p>※ 현재 근무 중인 경우 근무 종료일을 입력하지 마십시오.</p>
+                <table id="Employment-History-Table">
+                    <tr>
+                        <th>근무기관</th>
+                        <th>근무시작일</th>
+                        <th>근무종료일</th>
+                        <th>종목</th>
+                    </tr>
+                    <tr class="Employment-History-Tr">
+                        <td><input type="text" class="school-name" placeholder="학교명을 입력해주세요." name="Work[0].WorkPlace"></td>
+                        <td><input type="date" class="form-control" id="start-date" name="Work[0].StartDT" data-placeholder="근무 시작일을 선택해주세요." required></td>
+                        <td><input type="date" class="form-control" id="end-date" name="Work[0].EndDT" data-placeholder="근무 종료일을 선택해주세요." required></td>
+                        <td id="sport-table">
+                            <select class="form-select" aria-label="종목을 선택해주세요." id="sport-select-container2" name="Work[0].SportNo">
+                                <option value="">종목을 선택해주세요.</option>
+                            </select>
+                            <button onclick="addHistoryRow(this)">추가</button>
+                        </td>
+                    </tr>
+                </table>
+            </h4>
+            <h4 class="section-heading3">
+                3. 자격사항<span class="required-field">필수입력값 항목입니다.</span><hr class="section-hr">
+                <table id="Certificate-Table">
+                    <tr>
+                        <th>자격/면허</th>
+                        <th>자격번호</th>
+                        <th>취득일자</th>
+                        <th>발급기관</th>
+                    </tr>
+                    <tr class="Certificate-Table-Tr">
+                        <td><input type="text" class="qualification" name="Certificate[0].CertificateName" placeholder="자격을 입력해주세요."></td>
+                        <td><input type="text" class="qualification-number" name="Certificate[0].CertificateNumber" placeholder="영문, 숫자만 입력해주세요."></td>
+                        <td>
+                            <input type="date" class="form-control" id="get-date" name="Certificate[0].CertificateDT" data-placeholder="취득일자를 선택해주세요." required>
+                        </td>
+                        <td>
+                            <input type="text" class="origanization-name" placeholder="발급기관을 입력해주세요." name="Certificate[0].Origanization">
+                            <button onclick="addCertificateRow(this)">추가</button>
+                        </td>
+                    </tr>
+                </table>
+            </h4>
+            <div class="button-box">
+                <div class="button delete">취소하기</div>
+                <div id="cancelPopup" class="popup">
+                    <h2>지도자 등록 취소</h2>
+                    <span class="close" onclick="closePopup('cancelPopup')">&times;</span>
+                    <p>지도자 등록을 취소하시겠습니까? </br> 작성한 내용은 모두 삭제됩니다.</p>
+                    <button class="cancel">취소</button>
+                    <button class="confirm">확인</button>
+                </div>
+                <div id="register" class="button register" name="submit">등록하기</div>
+                <div id="button-register-error" class="popup">
+                    <h2>필수입력값 확인</h2>
+                    <span class="close" onclick="closePopup('button-register-error')">&times;</span>
+                    <p>필수입력값이 채워지지 않았습니다. </br>확인후 채워주시기 바랍니다.</p>
+                    <button class="confirm">확인</button>
+                </div>
+                <div id="button-register-success" class="popup">
+                    <h2>지도자 등록</h2>
+                    <span class="close" onclick="closePopup('button-register-success')">&times;</span>
+                    <p>입력한 내용으로 지도자를 등록하시겠습니까?</p>
+                    <button class="cancel">취소</button>
+@*                         <button class="confirm" type="submit" onclick="document.getElementById('main_form').submit()">확인</button>
+ *@                    <button id="submitBtn" class="confirm" type="button" onclick="submitData()">확인</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts {
+    <script>
+        var sportsOptionTags = '';
+
+        function submitData() {
+            //selected-image
+            let src =  $('#selected-image').attr('src');
+
+            //1. 유효성 검사
+            //2. 이미지 바인딩
+            // ~ 이것저것 해야할것 처리
+            $('#hidden-input').val(src);
+            //3. 다 성공하면 submit
+            $('#main_form').submit();
+            
+        }
+        // function 유효성검사(){
+        //     //1. 기본정보에 대한 유효성검사
+        //     var test = 기본정보_유효성검사();
+        //     if(!test.status){
+        //         return alert(test.msg);
+        //     }
+        //     //2. 근무이력에 대한 검사
+
+        //     //3. 자격사항에 대한 검사
+        // }
+
+        // function 기본정보_유효성검사(){
+
+        //     //기본정보 유효성 검사 실시
+        //     //1.이름
+        //     //if로 검사~ 진행
+        //     //이름이 공백이다?
+        //     return {status : false, msg : "이름이 공백입니다."};
+
+        //     //return false or true
+        // }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var LeaderModal = document.getElementById('LeaderModal');
+            var Leaderbutton = document.getElementById('button-Leader');
+            var closeBtn = document.getElementsByClassName('close')[0];
+            var cancelleaders = document.getElementById('cancelleaders');
+            var selectedLeaderCode = null;
+            var selectedLeaderName = null;
+
+            Leaderbutton.onclick = function () {
+                LeaderModal.style.display = 'block';
+                var inputText = document.getElementById('leaderCodeInput').value;
+                searchLeadersLocally(inputText); // 검색어를 사용하여 검색 (서버 요청 없이 로컬에서 검색)
+            };
+
+            closeBtn.onclick = function () {
+                LeaderModal.style.display = 'none';
+            };
+
+            cancelleaders.onclick = function () {
+                LeaderModal.style.display = 'none';
+            };
+
+            // "검색하기" 버튼 클릭 이벤트
+            document.getElementById('searchLeaderButton').addEventListener('click', function () {
+                var inputText = document.getElementById('leaderCodeInput').value;
+                searchLeadersLocally(inputText);
+            });
+
+            // 엔터 키 감지 이벤트
+            document.getElementById('leaderCodeInput').addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    var inputText = document.getElementById('leaderCodeInput').value;
+                    searchLeadersLocally(inputText);
+                }
+            });
+
+            function openregisterPopup1() {
+                var popup = document.getElementById('registerPopup1');
+                popup.style.display = 'block';
+
+                document.querySelector('#registerPopup1 .confirm').addEventListener('click', function () {
+                    popup.style.display = 'none';
+                });
+            }
+
+            function renderLeaderTable(data) {
+                var str = '';
+                if (data.length > 0) {
+                    data.forEach(function (item, i) {
+                        var number = i + 1;
+                        str += '<tr><td>' + number + '</td><td>' + item.LeaderName + '</td><td>' + item.LeaderNo + '</td></tr>';
+                    });
+                } else {
+                    str = '<tr><td colspan="3">검색된 결과가 없습니다.</td></tr>';
+                }
+                document.querySelector('.leaderTable_body').innerHTML = str;
+
+                document.querySelectorAll('.leaderTable_body tr').forEach(function (tr) {
+                    tr.addEventListener('click', function () {
+                        document.querySelectorAll('.leaderTable_body tr').forEach(function (row) {
+                            row.style.backgroundColor = '';
+                        });
+                        tr.style.backgroundColor = '#F9F9F9';
+
+                        var tds = tr.querySelectorAll('td');
+                        selectedLeaderCode = tds[2].innerText;
+                        selectedLeaderName = tds[1].innerText;
+                    });
+                });
+
+                // 등록하기 버튼 클릭 이벤트
+                document.getElementById('registerleaders').addEventListener('click', function () {
+                    if (selectedLeaderCode) {
+                        document.getElementById('code-heading').querySelector('input').value = selectedLeaderCode;
+                        document.getElementById('name-heading').querySelector('input').value = selectedLeaderName;
+                        LeaderModal.style.display = 'none';
+                    } else {
+                        openregisterPopup1();
+                    }
+                });
+            }
+
+            function updateTotalLeadersCount(data) {
+                document.getElementById('totalLeaders').innerText = '총 ' + data.length + '명';
+            }
+
+            // 로컬에서 데이터 검색 함수
+            function searchLeadersLocally(keyword) {
+                var leaderDataString = '@ld';
+
+                var replacedStr = leaderDataString.replace(/&quot;/g, '"');
+
+                try {
+                    var leaderData = JSON.parse(replacedStr);
+
+                    // 검색 로직 적용
+                    var searchData = leaderData.filter(function (item) {
+                        return item.LeaderName.includes(keyword) || item.LeaderNo.includes(keyword);
+                    });
+
+                    // 결과를 렌더링하고 총 지도자 수 업데이트
+                    renderLeaderTable(searchData);
+                    updateTotalLeadersCount(searchData);
+                } catch (error) {
+                    console.error('Error parsing leader data JSON:', error);
+                }
+            }
+
+        });
+
+    // -------------------------------------------------------------------
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var SchoolModal = document.getElementById('SchoolModal');
+            var Schoolbutton = document.getElementById('button-addon-School');
+            var Schoolclose = document.getElementsByClassName('close')[2];
+            var cancelSchools = document.getElementById('cancelSchool');
+            var selectedSchoolCode = null;
+            var selectedSchoolName = null;
+
+            Schoolbutton.onclick = function () {
+                SchoolModal.style.display = 'block';
+                var inputText = document.getElementById('schoolCodeInput').value;
+                searchSchoolsLocally(inputText);
+            };
+
+            Schoolclose.onclick = function () {
+                SchoolModal.style.display = 'none';
+            };
+            
+            cancelSchools.onclick = function () {
+                SchoolModal.style.display = 'none';
+            };
+
+            // "검색하기" 버튼 클릭 이벤트
+            document.getElementById('searchSchoolButton').addEventListener('click', function () {
+                var inputText = document.getElementById('schoolCodeInput').value;
+                searchSchoolsLocally(inputText);
+            });
+
+            // 엔터 키 감지 이벤트
+            document.getElementById('schoolCodeInput').addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    var inputText = document.getElementById('schoolCodeInput').value;
+                    searchSchoolsLocally(inputText);
+                }
+            });
+
+            function openregisterPopup2() {
+                var popup = document.getElementById('registerPopup2');
+                popup.style.display = 'block';
+
+                document.querySelector('#registerPopup2 .confirm').addEventListener('click', function () {
+                    popup.style.display = 'none';
+                });
+            }
+
+            function renderSchoolTable(data) {
+                var str = '';
+                if (data.length > 0) {
+                    data.forEach(function (item, i) {
+                        var number = i + 1;
+                        str += '<tr><td>' + number + '</td><td>' + item.SchoolName + '</td></tr>';
+                    });
+                } else {
+                    str = '<tr><td colspan="2">검색된 결과가 없습니다.</td></tr>';
+                }
+                document.querySelector('.schoolTable_body').innerHTML = str;
+
+                document.querySelectorAll('.schoolTable_body tr').forEach(function (tr) {
+                    tr.addEventListener('click', function () {
+                        document.querySelectorAll('.schoolTable_body tr').forEach(function (row) {
+                            row.style.backgroundColor = '';
+                        });
+                        tr.style.backgroundColor = '#F9F9F9';
+                        clickedSchoolNo = data[tr.rowIndex - 1]?.SchoolNo || '';
+                        var tds = tr.querySelectorAll('td');
+                        selectedSchoolName = tds[1].innerText;
+                    });
+                });
+
+                // 등록하기 버튼 클릭 이벤트
+                document.getElementById('registerSchool').addEventListener('click', function () {
+                    if (selectedSchoolName) {
+                        document.getElementById('school-heading').querySelector('input').value = selectedSchoolName;
+                        document.getElementById('hidden-SchoolName').value = clickedSchoolNo;
+                        console.log(clickedSchoolNo);
+                        SchoolModal.style.display = 'none';
+                    } else {
+                        openregisterPopup2();
+                    }
+                });
+            }
+
+            function updateTotalSchoolsCount(data) {
+                document.getElementById('totalSchool').innerText = '총 ' + data.length + '개';
+            }
+
+            // 로컬에서 데이터 검색 함수
+            function searchSchoolsLocally(keyword) {
+                var schoolDataString = '@sc';
+
+                var replacedStr = schoolDataString.replace(/&quot;/g, '"');
+
+                var schoolData = JSON.parse(replacedStr);
+
+                // 검색 로직 적용
+                var searchData = schoolData.filter(function (item) {
+                    return item.SchoolName.includes(keyword) || item.SchoolNo.includes(keyword);
+                });
+
+                // 결과를 렌더링하고 총 지도자 수 업데이트
+                renderSchoolTable(searchData);
+                updateTotalSchoolsCount(searchData);
+            }
+
+            // 최초 실행 시에는 전체 데이터를 로컬에서 검색
+            searchSchoolsLocally('');
+        });
+
+    // -------------------------------------
+
+    // 파일 입력의 변화를 감지하는 이벤트 리스너
+    document.getElementById("file-input").addEventListener("change", function () {
+
+        // 파일 입력
+        const fileInput = this;
+
+        // 이미지를 표시할 엘리먼트와 선택된 이미지를 표시할 엘리먼트를 가져오기
+        const imagePlaceholder = document.getElementById("image-placeholder");
+        const selectedImage = document.getElementById("selected-image");
+            
+
+        // 만약 파일 입력에 파일이 선택되었다면
+        if (fileInput.files && fileInput.files[0]) {
+
+            // FileReader 객체를 생성하기
+            const reader = new FileReader();
+
+            // 파일 읽기 작업이 완료되면 실행됨
+            reader.onload = function (e) {
+                // e.target.result에 Data URL이 포함되어 있음!?
+                const imageDataUrl = e.target.result;
+                //console.log('base64 변환',imageDataUrl);
+
+                // 선택된 이미지 엘리먼트의 src 속성을 읽어온 데이터 URL로 설정함
+                selectedImage.src = imageDataUrl;
+                
+                //$('#hidden-input').val(imageDataUrl);
+
+                // 선택된 이미지를 표시하고 이미지 플레이스홀더를 감춤
+                selectedImage.style.display = "block";
+                imagePlaceholder.style.display = "none";
+            };
+
+            // 파일을 Data URL로 변환하여 읽어옴......
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    });
+
+    // ---------------------------------------------------------
+
+        $(document).ready(function () {
+            // 정적인 데이터 사용
+            let Sport = '@sp';
+            let SportStr = JSON.parse(Sport.replace(/&quot;/g, '"'));
+
+            // DB 이용하여 옵션 동적으로 추가
+            var optionsHtml = '';
+            $.each(SportStr, function (index, item) {
+                optionsHtml += '<option value="' + item.SportNo + '">' + item.SportName + '</option>';
+            });
+
+            sportsOptionTags = optionsHtml;
+            // 옵션 추가
+            $('#sport-select-container1, #sport-select-container2').append(optionsHtml);
+        });
+   
+    // ---------------------------------------------------------
+
+    function addHistoryRow(button) {
+
+        var table = $('#Employment-History-Table');
+        var trIndex = $('.Employment-History-Tr').length;
+
+        // 이전 행의 유효성 검사
+        if (!validateRow(trIndex - 1)) {
+            return; // 유효성 검사 실패 시 추가하지 않음
+        }
+
+        var childTag = `<tr class="Employment-History-Tr">
+                                <td>
+                                    <input type="text" class="school-name" placeholder="학교명을 입력해주세요." name="Work[${trIndex}].WorkPlace">
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="start-date" name="Work[${trIndex}].StartDT" data-placeholder="근무 시작일을 선택해주세요." required>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="end-date" name="Work[${trIndex}].EndDT" data-placeholder="근무 종료일을 선택해주세요." required>
+                                </td>
+                                    <td id="sport-table">
+                                        <select class="form-select" aria-label="종목을 선택해주세요." id="sport-select-container2" name="Work[${trIndex}].SportNo">
+                                            <option value="">종목을 선택해주세요.</option>
+                                                ${sportsOptionTags}
+                                        </select>
+                                        <button onclick="addHistoryRow(this)">추가</button>
+                                    </td>
+                                </tr>`;
+        table.append(childTag);
+
+        // 새로 추가된 행의 추가 버튼을 삭제 버튼으로 변경
+        var newRow = table.find('.Employment-History-Tr:last');
+            newRow.find('button').text('삭제').attr('onclick', 'deleteHistoryRow(this)').css('background-color', '#969696');
+    }
+
+    function validateRow(index) {
+        var workPlaceInput = $(`.school-name[name^="Work[${index}].WorkPlace"]`);
+        var startDtInput = $(`.form-control[name^="Work[${index}].StartDT"]`);
+        var sportNoSelect = $(`.form-select[name^="Work[${index}].SportNo"]`);
+
+        // 유효성 검사
+        if (workPlaceInput.val() === "" || startDtInput.val() === "" || sportNoSelect.val() === "") {
+            alert("필수 입력값을 모두 입력해주세요.");
+            return false;
+        }
+        return true;
+    }
+
+    function deleteHistoryRow(button) {
+        // 삭제 버튼 클릭 시 해당 행 삭제
+        var row = $(button).closest('tr');
+        row.remove();
+    }
+
+    // ------------------------------------------------------------------------
+
+    function addCertificateRow(button) {
+        var table = $('#Certificate-Table');
+        var trIndex = $('.Certificate-Table-Tr').length;
+
+        // 이전 행의 유효성 검사
+        if (!validateCertificateRow(trIndex - 1)) {
+            return; // 유효성 검사 실패 시 추가하지 않음
+        }
+
+        var childTag = `<tr class="Certificate-Table-Tr">
+                                <td><input type="text" class="qualification" name="Certificate[${trIndex}].CertificateName" placeholder="자격을 입력해주세요."></td>
+                                <td><input type="text" class="qualification-number" name="Certificate[${trIndex}].CertificateNumber" placeholder="영문, 숫자만 입력해주세요."></td>
+                                <td>
+                                    <input type="date" class="form-control" id="get-date" name="Certificate[${trIndex}].CertificateDT" data-placeholder="취득일자를 선택해주세요." required>
+                                </td>
+                                <td>
+                                    <input type="text" class="origanization-name" placeholder="발급기관을 입력해주세요." name="Certificate[${trIndex}].Origanization">
+                                    <button onclick="addCertificateRow(this)">추가</button>
+                                </td>
+                            </tr>`;
+        table.append(childTag);
+
+        var newRow = table.find('.Certificate-Table-Tr:last');
+        newRow.find('button').text('삭제').attr('onclick', 'deleteCertificateRow(this)').css('background-color', '#969696');
+    }
+
+    function validateCertificateRow(index) {
+            var CertificateNameInput = $(`.qualification[name^="Certificate[${index}].CertificateName"]`);
+            var CertificateNumberInput = $(`.qualification-number[name^="Certificate[${index}].CertificateNumber"]`);
+            var CertificateDTInput = $(`.form-control[name^="Certificate[${index}].CertificateDT"]`);
+            var OriganizationInput = $(`.origanization-name[name^="Certificate[${index}].Origanization"]`);
+
+            // 유효성 검사
+            if (CertificateNameInput.val() === "" || CertificateNumberInput.val() === "" || CertificateDTInput.val() === "" || OriganizationInput.val() === "") {
+                alert("필수 입력값을 모두 입력해주세요.");
+                return false;
+            }
+            return true;
+    }
+
+    function deleteCertificateRow(button) {
+        // 삭제 버튼 클릭 시 해당 행 삭제
+        var row = $(button).closest('tr');
+        row.remove();
+    }
+    // --------------------------------------------------
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initializeEventListeners();
+    });
+
+    // 등록하기 버튼 클릭 시 처리 함수
+    function handleRegisterButtonClick() {
+        handleRegistration();
+    }
+
+    // 등록 모달창에서 취소 버튼 클릭 시 모달창 닫기 함수
+    function handleRegisterSuccessCancelClick() {
+        document.getElementById('button-register-success').style.display = 'none';
+    }
+
+    // 오류 모달창에서 확인 버튼 클릭 시 모달창 닫기
+    function closeErrorModal() {
+        document.getElementById('button-register-error').style.display = 'none';
+    }
+
+    function initializeEventListeners() {
+        // 등록하기 버튼 클릭 시 처리
+        document.querySelector('.register').addEventListener('click', handleRegisterButtonClick);
+
+        // 등록 모달창에서 취소 버튼 클릭 시 모달창 닫기
+        document.querySelector('#button-register-success .cancel').addEventListener('click', handleRegisterSuccessCancelClick);
+        
+        // 오류 모달창에서 확인 버튼 클릭 시 모달창 닫기
+        document.querySelector('#button-register-error .confirm').addEventListener('click', closeErrorModal);
+    }
+
+
+    function handleRegistration() {
+        
+        // 이미지 유효성 검사
+        var fileInput = document.getElementById('file-input');
+        var selectedImage = document.getElementById('selected-image');
+        var fileValid = fileInput.files.length > 0;
+        var maxFileSizeKB = 1; // 최대 허용 파일 크기 (MB)
+        //  console.log('Image Valid:', fileValid);
+
+        // 식별코드 유효성 검사
+        var codeInput = document.querySelector('#code-heading input');
+        var codeValid = codeInput.value.trim() !== '';
+        // console.log('codeValid:', codeValid);
+
+        // 학교명 유효성 검사
+        var schoolInput = document.querySelector('#school-heading input');
+        var schoolValid = schoolInput.value.trim() !== '';
+        // console.log('schoolValid:', schoolValid);
+
+        // 성명 유효성 검사
+        var nameInput = document.querySelector('#name-heading input');
+        var nameValid = nameInput.value.trim() !== '';
+        // console.log('nameValid:', nameValid);
+
+        // 생년월일 유효성 검사
+        var dobInput = document.querySelector('#dob-heading input');
+        console.log('dobValid:', dobInput.value);
+        var dobValid = dobInput.value.trim() !== '';
+
+        // 종목 유효성 검사
+        var sportSelect = document.querySelector('#sport-select-container1');
+        var sportValid = sportSelect.value !== '';
+
+        // 근무지 전화번호 유효성 검사
+        var telInput1 = document.querySelector('#tel-heading input[name="tel1"]');
+        var telInput2 = document.querySelector('#tel-heading input[name="tel2"]');
+        var telInput3 = document.querySelector('#tel-heading input[name="tel3"]');
+
+        var telValid =
+            /^\d{3}$/.test(telInput1.value.trim()) &&
+            /^\d{4}$/.test(telInput2.value.trim()) &&
+            /^\d{4}$/.test(telInput3.value.trim());
+
+        // 전화번호를 묶어서 hidden-tel에 설정
+        var hiddenTelInput = document.getElementById('hidden-tel');
+        hiddenTelInput.value = `${telInput1.value.trim()}-${telInput2.value.trim()}-${telInput3.value.trim()}`;
+
+        // 최초채용 유효성 검사
+        var hireInput = document.querySelector('#hire-date-heading input');
+        var hireValid = hireInput.value.trim() !== '';
+        console.log('hireValid:', hireValid);
+
+        // 고용 기록 테이블에 대한 유효성 검사 이벤트 리스너 추가
+        document.querySelector('#Employment-History-Table button').addEventListener('click', function () {
+            validateEmploymentHistoryTable();
+        });
+
+        // 자격증 테이블에 대한 유효성 검사 이벤트 리스너 추가
+        document.querySelector('#Certificate-Table button').addEventListener('click', function () {
+            validateCertificateTable();
+        });
+
+        // 필수 입력값이 모두 채워져 있을 때 등록 모달창 띄우기
+        if (
+            
+            codeValid &&
+            schoolValid &&
+            nameValid &&
+            dobValid &&
+            telValid &&
+            sportValid &&
+            hireValid &&
+            validateEmploymentHistoryTable() &&
+            validateCertificateTable()
+        ) {
+            // 등록 모달창 띄우기
+            document.getElementById('button-register-success').style.display = 'block';
+
+        } else {
+            // 필수 입력값이 비어있어간 조건을 만족하지 못할 때 오류 모달창 띄우기
+            document.getElementById('button-register-error').style.display = 'block';
+        }
+    }
+
+    function validateEmploymentHistoryTable() {
+        var rows = document.querySelectorAll('#Employment-History-Table tr[id^="Employment-History-Tr"]');
+
+        for (var i = 0; i < rows.length; i++) {
+            var inputs = rows[i].querySelectorAll('input');
+
+            var schoolName = inputs[0].value.trim();
+            var startDate = inputs[1].value.trim();
+            var endDate = inputs[2].value.trim();
+            var sport = rows[i].querySelector('select').value;
+
+            if (schoolName === '' || startDate === '' || endDate === '' || sport === '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function validateCertificateTable() {
+        var rows = document.querySelectorAll('#Certificate-Table tr');
+
+        for (var i = 1; i < rows.length; i++) {
+            var inputs = rows[i].querySelectorAll('input');
+
+            var qualification = inputs[0].value.trim();
+            var qualificationNumber = inputs[1].value.trim();
+            var getDate = inputs[2].value.trim();
+            var issuingAuthority = inputs[3].value.trim();
+
+            if (qualification === '' || qualificationNumber === '' || getDate === '' || issuingAuthority === '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function getEmploymentHistoryData() {
+        var employmentHistoryData = [];
+        var rows = document.querySelectorAll('#Employment-History-Table tr[id^="Employment-History-Tr"]');
+
+        for (var i = 0; i < rows.length; i++) {
+            var inputs = rows[i].querySelectorAll('input');
+            var schoolName = inputs[0].value.trim();
+            var startDate = inputs[1].value.trim();
+            var endDate = inputs[2].value.trim();
+            var sport = rows[i].querySelector('select').value;
+
+            employmentHistoryData.push({
+                schoolName: schoolName,
+                startDate: startDate,
+                endDate: endDate,
+                sport: sport
+            });
+        }
+
+        return employmentHistoryData;
+    }
+
+    function getQualificationData() {
+        var qualificationData = [];
+        var rows = document.querySelectorAll('#Certificate-Table tr');
+
+        for (var i = 1; i < rows.length; i++) {
+            var inputs = rows[i].querySelectorAll('input');
+            var qualification = inputs[0].value.trim();
+            var qualificationNumber = inputs[1].value.trim();
+            var getDate = inputs[2].value.trim();
+            var issuingAuthority = inputs[3].value.trim();
+
+            qualificationData.push({
+                qualification: qualification,
+                qualificationNumber: qualificationNumber,
+                getDate: getDate,
+                issuingAuthority: issuingAuthority
+            });
+        }
+
+        return qualificationData;
+    }
+
+
+
+    // --------------------------------------------------
+
+    // 취소하기 버튼 클릭 시 팝업 띄우기
+    document.querySelector('.button.delete').addEventListener('click', function () {
+        openCancelPopup();
+    });
+
+    // 팝업에서 취소 또는 확인 버튼 클릭 시 동작 정의
+    function openCancelPopup() {
+        // 팝업 열기
+        var popup = document.getElementById('cancelPopup');
+        popup.style.display = 'block';
+
+        // 취소 버튼 클릭 시
+        document.querySelector('#cancelPopup .cancel').addEventListener('click', function () {
+            popup.style.display = 'none';
+        });
+
+        // 확인 버튼 클릭 시
+        document.querySelector('#cancelPopup .confirm').addEventListener('click', function () {
+           window.location.href='@Url.Action("Start")';
+        });
+    }
+
+    function openSuccessPopup(message) {
+        // 성공 팝업에 확인 버튼 클릭 시
+        document.querySelector('#successPopup .confirm').addEventListener('click', function () {
+            window.location.href = '#';
+        });
+    }
+
+    </script>
+}

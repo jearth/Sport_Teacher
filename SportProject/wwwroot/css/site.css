@@ -1,0 +1,98 @@
+/* «Ï¥ı */
+#wrap {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#header {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+    #header img {
+        margin-top: 10px;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        margin-right: 102px;
+        width: 130px;
+        height: 40px;
+    }
+
+    #header .nav-item {
+        font-size: 13px;
+        font-weight: bold;
+        background-color: #203883;
+        padding: 1px;
+        border-radius: 5px;
+    }
+
+        #header .nav-item a.nav-link.custom-text {
+            color: white;
+        }
+
+#container {
+    display: flex;
+    flex: 1;
+}
+
+
+/* ªÁ¿ÃµÂ πŸ */
+#sidebar {
+    background-color: #ffffff;
+    padding: 10px;
+    width: 200px;
+    border-right: 1px solid #EEEEEE;
+}
+
+    #sidebar .nav-link {
+        width: 161px;
+        height: 56px;
+        margin-top: 20px;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        padding: 13px;
+        border: 1px solid #203883;
+        border-radius: 5px;
+        color: #203883;
+        background-color: #ffffff;
+        font-weight: bold;
+        box-shadow: 2px 3px 5px rgba(37, 37, 37, 0.1);
+    }
+
+        #sidebar .nav-link i {
+            color: #203883;
+            margin-right: 10px;
+            margin-left: 9px;
+        }
+
+
+/* ƒ¡≈Ÿ√˜ */
+#content {
+    flex: 1;
+    padding: 10px;
+    background-color: #FBFBFB;
+}
+
+    #content h4 {
+        font-weight: bold;
+        margin-top: 40px;
+        margin-left: 60px;
+    }
+
+/* ≤ø∏Æ∏ª */
+#footer {
+    background-color: #FBFBFB;
+    color: #969696;
+    margin-left: 55px;
+    padding: 10px;
+    width: 86%;
+    height: 30px;
+    bottom: 10px;
+}

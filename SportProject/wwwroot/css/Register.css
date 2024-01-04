@@ -1,0 +1,918 @@
+﻿/* 컨텐츠 박스 1-1 */
+#container1 {
+    margin-top: 60px;
+    margin-left: 60px;
+    margin-bottom: 156px;
+    width: 1300px;
+    height: 1200px;
+    border: 2px solid #EEEEEE;
+    background-color: #ffffff;
+    border-radius: 0.5em;
+    display: flex;
+    color: #212529;
+}
+
+    #container1 .section-heading1 {
+        font-weight: bold;
+        margin-top: 43px;
+        margin-left: 40px;
+    }
+
+        #container1 .section-heading1 .required-field {
+            color: red;
+            font-weight: bold;
+            margin-left: 650px;
+            font-size: 13px;
+        }
+
+    #container1 .section-hr {
+        width: 1200px;
+        border: 2px solid #238AF7;
+        margin-right: 39px;
+    }
+
+/* ------------------------------------------ */
+.custom-container {
+    padding-right: 25px;
+    padding-top: 25px;
+}
+
+.custom-row {
+    margin-bottom: 25px;
+}
+
+/* ------------------------------------------ */
+#container1 #image-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+#container1 #image-placeholder {
+    margin-top: 5px;
+    margin-left: 35px;
+    width: 243px;
+    height: 315px;
+    background-color: #ccc;
+    top: 0;
+    left: 10;
+    cursor: pointer;
+    border-radius: 0.5em;
+    background-color: #F2F4F5;
+    border: 2px solid #dad9d9;
+}
+
+#container1 #upload-button {
+    margin-top: 242px;
+    margin-left: 17px;
+    width: 203px;
+    height: 47px;
+    padding-top: 10px;
+    padding-left: 50px;
+    background-color: white;
+    color: #0F2D6A;
+    cursor: pointer;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+
+#container1 #selected-image {
+    top: 0;
+    left: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    margin-left: 35px;
+    width: 243px;
+    height: 315px;
+    border-radius: 0.5em;
+    display: none;
+}
+
+#container1 #image-container p {
+    color: #DD4B39;
+    font-size: 12px;
+    margin-top: 3px;
+    margin-left: 35px;
+    font-weight: bold;
+}
+
+#container1 #file-input {
+    display: none;
+}
+
+/* ------------------------------------------ */
+
+#container1 .btn {
+    background-color: #238AF7;
+    color: white;
+    font-size: 15px;
+}
+
+#container1 #code-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+    #container1 #code-heading input {
+        pointer-events: none;
+    }
+
+    #container1 #code-heading .input-group {
+        height: 43px;
+        width: 435px;
+        margin-top: 10px;
+    }
+
+    #container1 #code-heading input.form-control {
+        font-size: 15px;
+        border-color: #DDDDDD;
+    }
+
+    #container1 #code-heading input::placeholder {
+        font-size: 15px;
+        color: #969696;
+    }
+
+/* 모달 스타일 */
+#container1 .modal {
+    display: none;
+    left: 700px;
+    width: 650px;
+    height: 900px;
+}
+
+#container1 .modal-content {
+    width: 700px;
+    height: 700px;
+    background-color: #fefefe;
+    margin-top: 70px;
+    border: 1px solid #DDDDDD;
+    width: 80%;
+}
+
+/* 모달 헤더 스타일 */
+#container1 .modal-header {
+    border-bottom: 2px solid #ddd;
+}
+
+    #container1 .modal-header h2 {
+        margin-left: 10px;
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #0F2D6A;
+    }
+
+/* 닫기 버튼 스타일 */
+#container1 .close {
+    color: #767676;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+    #container1 .close:hover,
+    #container1 .close:focus {
+        color: black;
+        cursor: pointer;
+    }
+
+/* 모달 검색 창 스타일 */
+#container1 .search-container {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 28px;
+    margin-right: 28px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ddd;
+}
+
+    #container1 .search-container p {
+        margin-top: 13px;
+        margin-right: 60px;
+        font-weight: bold;
+    }
+
+    #container1 .search-container input {
+        height: 40px;
+        width: 260px;
+        border: 1px solid #DDDDDD;
+        border-radius: 0.5em;
+    }
+
+        #container1 .search-container input::placeholder {
+            font-size: 15px;
+            color: #969696;
+            padding-left: 10px;
+        }
+
+    #container1 .search-container button {
+        margin-left: 10px;
+        height: 40px;
+        width: 80px;
+        font-size: 15px;
+        font-weight: bold;
+        border: 1px solid #0F2D6A;
+        border-radius: 0.5em;
+        background-color: #ffffff;
+        color: #0F2D6A;
+    }
+
+/* 지도자 테이블 스타일 */
+#leaderTable {
+    margin-top: 20px;
+    margin-left: 28px;
+    overflow: auto;
+    height: 400px;
+}
+
+    #leaderTable h2 {
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        display: flex;
+    }
+
+        #leaderTable h2 p {
+            color: #0F2D6A;
+            font-size: 15px;
+            font-weight: bold;
+            margin-left: 8px;
+            margin-top: 3px;
+        }
+
+    #leaderTable th, #leaderTable td {
+        width: 148px;
+        padding: 8px;
+    }
+
+td:first-child, th:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+td:not(:first-child), th:not(:first-child) {
+    text-align: left;
+}
+
+tbody.leaderTable_body {
+    font-weight: bold;
+    font-size: 15px;
+    color: #212529;
+}
+
+tr {
+    border-bottom: 1px solid #EEEEEE;
+}
+
+#leaderTable th {
+    border-top: 4px solid #EEEEEE;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid #EEEEEE;
+}
+
+.button-box2 {
+    margin-top: 40px;
+    margin-left: 105px;
+    display: flex;
+    align-items: center;
+}
+
+    .button-box2 .delete2 {
+        color: #0F2D6A;
+        border: 1px solid #0F2D6A;
+        margin-right: 8.5px;
+        padding-left: 38px;
+        padding-top: 15px;
+    }
+
+    .button-box2 .register2 {
+        background-color: #0F2D6A;
+        color: white;
+        padding-left: 38px;
+        padding-top: 15px;
+    }
+
+#registerPopup1.popup h2 {
+    font-size: 25px;
+    color: #0F2D6A;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#registerPopup1 p {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 35px;
+}
+
+#registerPopup1 button.confirm {
+    margin-left: 130px;
+    margin-top: 15px;
+    width: 88px;
+    height: 43px;
+    background-color: #0F2D6A;
+    color: #ffffff;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+/* ------------------------------------------ */
+
+#container1 #school-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+    #container1 #school-heading input {
+        pointer-events: none;
+    }
+
+    #container1 #school-heading .input-group {
+        height: 43px;
+        width: 435px;
+        margin-top: 10px;
+    }
+
+    #container1 #school-heading input.form-control {
+        font-size: 15px;
+        border-color: #DDDDDD;
+    }
+
+    #container1 #school-heading input::placeholder {
+        font-size: 15px;
+        color: #969696;
+    }
+
+/* 모달 검색 창 스타일 */
+#container1 .search-container2 {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 28px;
+    margin-right: 28px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ddd;
+}
+
+    #container1 .search-container2 p {
+        margin-top: 13px;
+        margin-right: 40px;
+        font-weight: bold;
+    }
+
+    #container1 .search-container2 input {
+        height: 40px;
+        width: 260px;
+        border: 1px solid #DDDDDD;
+        border-radius: 0.5em;
+    }
+
+        #container1 .search-container2 input::placeholder {
+            font-size: 15px;
+            color: #969696;
+            padding-left: 10px;
+        }
+
+    #container1 .search-container2 button {
+        margin-left: 10px;
+        height: 40px;
+        width: 80px;
+        font-size: 15px;
+        font-weight: bold;
+        border: 1px solid #0F2D6A;
+        border-radius: 0.5em;
+        background-color: #ffffff;
+        color: #0F2D6A;
+    }
+
+/* 학교 테이블 스타일 */
+#schoolTable {
+    margin-top: 20px;
+    margin-left: 28px;
+    overflow: auto;
+    height: 400px;
+}
+
+    #schoolTable h2 {
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        display: flex;
+    }
+
+        #schoolTable h2 p {
+            color: #0F2D6A;
+            font-size: 15px;
+            font-weight: bold;
+            margin-left: 8px;
+            margin-top: 3px;
+        }
+
+    #schoolTable th, #schoolTable td {
+        width: 222px;
+        padding: 8px;
+        text-align: center;
+    }
+
+    #schoolTable th {
+        border-top: 4px solid #EEEEEE;
+        border-left: none;
+        border-right: none;
+        border-bottom: 2px solid #EEEEEE;
+    }
+
+tbody.schoolTable_body {
+    font-weight: bold;
+    font-size: 15px;
+    color: #212529;
+}
+
+.button-box3 {
+    margin-top: 40px;
+    margin-left: 105px;
+    display: flex;
+    align-items: center;
+}
+
+    .button-box3 .delete3 {
+        color: #0F2D6A;
+        border: 1px solid #0F2D6A;
+        margin-right: 8.5px;
+        padding-left: 38px;
+        padding-top: 15px;
+    }
+
+    .button-box3 .register3 {
+        background-color: #0F2D6A;
+        color: white;
+        padding-left: 38px;
+        padding-top: 15px;
+    }
+
+#registerPopup2.popup h2 {
+    font-size: 25px;
+    color: #0F2D6A;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#registerPopup2 p {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 35px;
+}
+
+#registerPopup2 button.confirm {
+    margin-left: 130px;
+    margin-top: 15px;
+    width: 88px;
+    height: 43px;
+    background-color: #0F2D6A;
+    color: #ffffff;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+.hidden {
+    display: none;
+}
+/* ------------------------------------------ */
+
+#container1 #name-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+    #container1 #name-heading input {
+        pointer-events: none;
+    }
+
+    #container1 #name-heading .mb-3 {
+        margin-top: 10px;
+        height: 43px;
+        width: 281px;
+    }
+
+    #container1 #name-heading input::placeholder {
+        color: #969696;
+        font-size: 15px;
+    }
+
+/* ------------------------------------------ */
+#container1 #dob-heading {
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+    #container1 #dob-heading .mb-3 {
+        height: 43px;
+        width: 281px;
+        margin-top: 10px;
+        margin-left: 15px;
+    }
+
+input[type="date"]::before {
+    content: attr(data-placeholder);
+    width: 100%;
+}
+
+input[type="date"]:valid::before {
+    display: none;
+}
+
+input[data-placeholder]::before {
+    color: #969696;
+    font-size: 15px;
+}
+
+/* ------------------------------------------ */
+#container1 #gender-heading {
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+    #container1 #gender-heading .gender-checkboxes {
+        margin-top: 17px;
+        margin-left: 20px;
+    }
+
+    #container1 #gender-heading input[type="radio"] {
+        width: 19px;
+        height: 19px;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+
+    #container1 #gender-heading .gender-checkboxes label {
+        margin-right: 20px;
+    }
+
+/* ------------------------------------------ */
+#container1 #sport-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#container1 select {
+    font-size: 15px;
+    color: #969696;
+    height: 43px;
+    width: 281px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin: 10px 0;
+    border: 1px solid #e4e4e4;
+    border-radius: 0.5em;
+}
+
+#sport-select-container1 option {
+    color: #333;
+}
+
+/* ------------------------------------------ */
+#phone-heading {
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 18px;
+}
+
+.d-inline-flex .dash {
+    margin: 0 8px;
+    color: #2C2C2C;
+    font-weight: normal;
+    font-size: 15px;
+    vertical-align: middle;
+    margin-top: 10px;
+}
+
+.d-inline-flex {
+    margin-top: 10px;
+    margin-left: 16px;
+}
+
+input[name="tel1"].custom-input {
+    width: 69px;
+    height: 43px;
+}
+
+input[name="tel2"].custom-input {
+    width: 83px;
+    height: 43px;
+}
+
+input[name="tel3"].custom-input {
+    width: 83px;
+    height: 43px;
+}
+
+/* ------------------------------------------ */
+#container1 #hire-date-heading {
+    margin-left: 19px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#hire-date-heading .mb-3 {
+    margin-top: 10px;
+    margin-left: 18px;
+    width: 255px;
+    height: 43px;
+}
+
+#container1 #hire-date-heading p {
+    margin-top: 7.5px;
+    color: #2C2C2C;
+    font-size: 11px;
+}
+
+.highlight-text {
+    color: #DD4B39;
+}
+
+/* 컨텐츠 박스 1-2 */
+#container1 .section-heading2 {
+    font-weight: bold;
+    margin-top: 43px;
+    margin-left: 40px;
+}
+
+    #container1 .section-heading2 .required-field {
+        color: red;
+        font-weight: bold;
+        margin-left: 460px;
+        font-size: 13px;
+    }
+
+    #container1 .section-heading2 p {
+        margin-top: 19px;
+        color: #0F2D6A;
+        font-size: 15.5px;
+        font-weight: bold;
+    }
+
+    /* 테이블 전체 스타일 */
+    #container1 .section-heading2 table,
+    #container1 .section-heading3 table {
+        width: 97%;
+        margin-top: 10px;
+    }
+
+    #container1 .section-heading2 th,
+    #container1 .section-heading3 th {
+        border-top: 2px solid #EEEEEE;
+        border-left: none;
+        border-right: none;
+        border-bottom: 2px solid #EEEEEE;
+        font-size: 15.5px;
+        font-weight: bold;
+        padding: 14px;
+        text-align: center;
+    }
+
+    /* 행 스타일 */
+    #container1 .section-heading2 tr,
+    #container1 .section-heading3 tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* 셀 스타일 */
+    #container1 .section-heading2 td,
+    #container1 .section-heading3 td {
+        padding: 8px;
+        text-align: center;
+    }
+
+    /* 입력 필드 스타일 */
+    #container1 .section-heading2 input[type="text"], input[type="date"],
+    #container1 .section-heading3 input[type="text"], input[type="date"] {
+        width: 263px;
+        height: 43px;
+        font-size: 15px;
+        border: 1px solid #EEEEEE;
+        border-radius: 0.5em;
+    }
+
+    #container1 .section-heading2 input::placeholder {
+        font-size: 15px;
+        color: #969696;
+        padding-left: 5px;
+    }
+
+#container1 .section-heading3 input::placeholder {
+    font-size: 15px;
+    color: #969696;
+    padding-left: 5px;
+}
+
+/* 셀렉트 박스 스타일 */
+#container1 #sport-select-container2 {
+    border: 1px solid #e7e7e7;
+    border-radius: 0.5em;
+    font-size: 15px;
+    width: 264px;
+    height: 43px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    color: #969696;
+}
+
+#sport-select-container2 option {
+    color: #333;
+}
+
+#sport-table {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 버튼 스타일 */
+#container1 .section-heading2 button,
+#container1 .section-heading3 button {
+    width: 56px;
+    height: 44px;
+    font-size: 15px;
+    background-color: #238AF7;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.2em;
+}
+
+    #container1 .section-heading2 button.delete,
+    #container1 .section-heading3 button.delete {
+        background-color: #969696;
+    }
+
+
+/* 컨텐츠 박스 1-3 */
+#container1 .section-heading3 {
+    font-weight: bold;
+    margin-top: 43px;
+    margin-left: 40px;
+}
+
+#container1 .section-heading3 .required-field {
+    color: red;
+    font-weight: bold;
+    margin-left: 936px;
+    font-size: 13px;
+}
+
+.button-box {
+    margin-left: 500px;
+    margin-top: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    width: 139px;
+    height: 55px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0.5em;
+}
+
+.button.delete {
+    color: #0F2D6A;
+    border: 1px solid #0F2D6A;
+    margin-right: 8.5px;
+    padding-left: 38px;
+    padding-top: 15px;
+}
+
+.button.register {
+    background-color: #0F2D6A;
+    color: white;
+    padding-left: 38px;
+    padding-top: 15px;
+}
+
+/* --------------------------------------- */
+/* 취소하기 버튼 클릭 시 */
+.popup {
+    width: 400px;
+    height: 253px;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 0.5em;
+}
+
+#cancelPopup h2 {
+    font-size: 25px;
+    color: #0F2D6A;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#cancelPopup p {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 35px;
+}
+
+.popup button.cancel {
+    margin-left: 85px;
+    margin-top: 15px;
+    width: 88px;
+    height: 43px;
+    background-color: #ffffff;
+    color: #0F2D6A;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+
+.popup button.confirm {
+    width: 88px;
+    height: 43px;
+    background-color: #0F2D6A;
+    color: #ffffff;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+
+/* 닫기 버튼 스타일 */
+.popup .close {
+    display: none;
+}
+
+/* 등록하기 버튼 클릭 시 유효값이 다 채워지지 않았을 때 */
+#button-register-error.popup h2 {
+    font-size: 25px;
+    color: #0F2D6A;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#button-register-error p {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 35px;
+}
+
+#button-register-error button.confirm {
+    margin-left: 130px;
+    margin-top: 15px;
+    width: 88px;
+    height: 43px;
+    background-color: #0F2D6A;
+    color: #ffffff;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+
+/* 등록하기 버튼 클릭 시 유효값이 다 채워졌을 때*/
+#button-register-success.popup h2 {
+    font-size: 25px;
+    color: #0F2D6A;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#button-register-success p {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 35px;
+}
+
+#button-register-success button.confirm {
+    width: 88px;
+    height: 43px;
+    background-color: #0F2D6A;
+    color: #ffffff;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+
+#button-register-success button.cancel {
+    margin-left: 85px;
+    margin-top: 15px;
+    width: 88px;
+    height: 43px;
+    background-color: #ffffff;
+    color: #0F2D6A;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}

@@ -1,0 +1,346 @@
+﻿/* 컨텐츠 박스 1 */
+#container1 {
+    margin-top: 60px;
+    margin-left: 60px;
+    width: 1280px;
+    height: 84px;
+    border: 2px solid #EEEEEE;
+    background-color: #ffffff;
+    border-radius: 0.5em;
+    display: flex;
+    align-items: center;
+    color: #212529;
+}
+
+    #container1 .search-box {
+        display: flex;
+        align-items: center;
+    }
+
+    #container1 h4 {
+        color: #212529;
+    }
+
+    #container1 h7 {
+        margin-left: 44px;
+        margin-right: 38px;
+        font-weight: bold;
+        color: #212529;
+    }
+
+    /* ----------------------------------------------------------- */
+
+    #container1 .select {
+        width: 179px;
+        height: 35px;
+        margin-right: 13px;
+    }
+
+    #container1 .selected {
+        display: flex;
+        align-items: center;
+        padding: 6px 10px;
+        border: 2px solid #EEEEEE;
+        border-radius: 0.5em;
+        cursor: pointer;
+    }
+
+    #container1 .selected-value {
+        font-weight: bold;
+        font-size: 13px;
+        color: #212529;
+    }
+
+    #container1 .arrow {
+        border: 2px solid #5D5D5D;
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+        padding: 4px;
+        transform: rotate(45deg);
+        margin-left: 111px;
+        margin-bottom: 5px;
+    }
+
+    #container1 ul {
+        width: 179px;
+        height: 35px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        top: 30%;
+        display: none;
+        box-sizing: border-box;
+    }
+
+    #container1 .option {
+        padding: 8px;
+        font-weight: bold;
+        font-size: 13px;
+        color: #212529;
+        cursor: pointer;
+        background-color: #ffffff;
+        border: 2px solid #EEEEEE;
+    }
+
+        #container1 .option:first-child {
+            border-bottom: none;
+        }
+
+        #container1 .option:nth-child(2) {
+            border-bottom: none;
+            border-top: none;
+        }
+
+        #container1 .option:last-child {
+            border-top: none;
+        }
+
+        #container1 .option:hover {
+            background-color: #EEEEEE;
+            color: rgb(0, 0, 0);
+        }
+
+    #container1 .select.active ul {
+        display: block;
+    }
+
+    /* ----------------------------------------------------------- */
+
+    #container1 select option:checked {
+        background-color: #EEEEEE;
+        color: rgb(0, 0, 0);
+    }
+
+    #container1 .search-box .input-box input {
+        width: 220px;
+        height: 36px;
+        margin-right: 20px;
+        border-radius: 0.5em;
+        border: 2px solid #EEEEEE;
+        font-size: 13px;
+        padding: 5px 10px;
+    }
+
+    #container1 .input-box input::placeholder {
+        color: #969696;
+    }
+
+    #container1 .button-box .search-button {
+        width: 88px;
+        height: 36px;
+        color: #0F2D6A;
+        font-size: 13px;
+        font-weight: bold;
+        border: 2px solid #0F2D6A;
+        border-radius: 0.5em;
+        text-align: center;
+        padding-top: 6px;
+        cursor: pointer;
+    }
+
+/* 컨텐츠 박스2 */
+#container2 {
+    margin-top: 16px;
+    margin-left: 60px;
+    width: 1280px;
+    height: 680px;
+    border: 2px solid #EEEEEE;
+    background-color: #ffffff;
+    border-radius: 0.5em;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#container2 h5 {
+    margin-top: 35px;
+    font-weight: bold;
+    color: #222222;
+    display: flex;
+    margin-left: 30px;
+}
+
+    #container2 h5 p {
+        color: #222222;
+        font-size: 15px;
+        font-weight: bold;
+        margin-left: 8px;
+        margin-top: 3px;
+    }
+
+#container2 .button-box {
+    gap: 12px;
+    margin-right: 30px;
+    padding-top: 20px;
+}
+
+#container2 .button {
+    padding: 8px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    border: none;
+    border-radius: 0.5em;
+}
+
+    #container2 .button.register {
+        width: 130px;
+        height: 36px;
+        font-size: 13px;
+        font-weight: bold;
+        background-color: #0F2D6A;
+        color: white;
+    }
+
+    #container2 .button.delete {
+        width: 92px;
+        height: 36px;
+        font-size: 13px;
+        font-weight: bold;
+        background-color: #FFE0DF;
+        color: #DD4B39;
+    }
+
+.popup {
+    width: 400px;
+    height: 253px;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 0.5em;
+}
+
+#deletePopup h2 {
+    font-size: 25px;
+    color: #0F2D6A;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    font-weight: bold;
+}
+
+#deletePopup p {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 35px;
+}
+
+.popup-button-box {
+    display: flex;
+}
+
+.popup button.confirm {
+    margin-left: 85px;
+    margin-top: 20px;
+    width: 88px;
+    height: 43px;
+    background-color: #0F2D6A;
+    color: #ffffff;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+    font-size: 15px;
+}
+
+.popup button.register {
+    margin-left: 10px;
+    margin-top: 20px;
+    width: 88px;
+    height: 43px;
+    background-color: #ffffff;
+    color: #0F2D6A;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+    font-size: 15px;
+}
+
+/* 닫기 버튼 스타일 */
+.popup .close {
+    display: none;
+}
+
+/* ----------------------------------------- */
+th input[type="checkbox"] {
+    margin-right: 15px;
+}
+
+td input[type="checkbox"] {
+    margin-right: 35px;
+}
+
+.col {
+    display: flex;
+    justify-content: center;
+}
+
+.leaderTable {
+    width: 97%;
+    margin: 20px;
+}
+
+table {
+    font-size: 13px;
+    margin-left: 13px;
+    width: 98%;
+}
+
+th {
+    border-top: 2px solid #EEEEEE;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid #EEEEEE;
+    font-size: 15px;
+    padding: 8px;
+    text-align: center;
+}
+
+td {
+    font-weight: bold;
+    padding: 7px;
+    text-align: center;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+thead {
+    background-color: #FBFBFB;
+}
+
+.leaderTable_body tr:hover {
+    cursor: pointer;
+    background-color: #FBFBFB;
+}
+
+.detailsBtn {
+    background-color: #F2F4F5;
+    color: #0F2D6A;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.detailsBtn:hover {
+    background-color: #0F2D6A;
+    color: #ffffff;
+}
+
+/* ---------------------------------------- */
+
+.pagination a {
+    color: #0F2D6A;
+    border: #ffffff;
+    font-weight: bold;
+    font-size: 18px;
+}

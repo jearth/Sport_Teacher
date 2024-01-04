@@ -1,0 +1,310 @@
+﻿#container1 {
+    margin-top: 60px;
+    margin-left: 60px;
+    margin-bottom: 156px;
+    width: 1300px;
+    height: 1200px;
+    border: 2px solid #EEEEEE;
+    background-color: #ffffff;
+    border-radius: 0.5em;
+    display: flex;
+    color: #212529;
+}
+
+#container1 .section-heading1 {
+    font-weight: bold;
+    margin-top: 43px;
+    margin-left: 20px;
+}
+
+#container1 .section-heading1 .required-field {
+    color: red;
+    font-weight: bold;
+    margin-left: 650px;
+    font-size: 13px;
+}
+
+#container1 .section-hr {
+    width: 1200px;
+    border: 2px solid #238AF7;
+    margin-right: 39px;
+}
+
+/* ----------------------------------------------------- */
+.custom-container {
+    padding-right: 25px;
+    padding-top: 25px;
+}
+
+.custom-row {
+    margin-bottom: 25px;
+}
+/* ----------------------------------------------------- */
+
+#container1 #image-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+#container1 #upload-button {
+    position: relative;
+    margin-top: -70px;
+    margin-bottom: 40px;
+    margin-left: 50px;
+    width: 203px;
+    height: 47px;
+    padding-top: 10px;
+    padding-left: 50px;
+    background-color: white;
+    color: #0F2D6A;
+    cursor: pointer;
+    border: 2px solid #0F2D6A;
+    border-radius: 0.5em;
+}
+
+#container1 #selected-image {
+    top: 0;
+    left: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    margin-left: 35px;
+    width: 243px;
+    height: 315px;
+    border-radius: 0.5em;
+    display: none;
+}
+
+#container1 #image-container p {
+    color: #DD4B39;
+    font-size: 12px;
+    margin-top: 3px;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+#container1 #file-input {
+    display: none;
+}
+
+#container1 #image-container img {
+    margin-left: 20px;
+    width: 260px;
+    height: 350px;
+}
+/* ----------------------------------------------------- */
+
+#container1 #code-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#container1 .section-hr2 {
+    width: 428px;
+    border: 1px solid #0F2D6A;
+    margin-right: 39px;
+}
+/* ----------------------------------------------------- */
+
+#container1 #school-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#container1 .section-hr3 {
+    width: 428px;
+    border: 1px solid #0F2D6A;
+    margin-right: 39px;
+}
+/* ----------------------------------------------------- */
+
+#container1 #name-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#container1 .section-hr4 {
+    width: 290px;
+    border: 1px solid #0F2D6A;
+}
+
+/* ----------------------------------------------------- */
+
+#container1 #dob-heading {
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+#container1 .section-hr5 {
+    margin-left: 13px;
+    width: 290px;
+    border: 1px solid #0F2D6A;
+}
+
+#container1 #birthdayResult {
+    margin-left: 13px;
+}
+
+/* ----------------------------------------------------- */
+
+#container1 #gender-heading {
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+#container1 .section-hr6 {
+    margin-left: 17px;
+    width: 255px;
+    border: 1px solid #0F2D6A;
+}
+
+#container1 #genderResult {
+    margin-left: 20px;
+}
+/* ----------------------------------------------------- */
+
+#container1 #sport-heading {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#container1 .section-hr7 {
+    width: 290px;
+    border: 1px solid #0F2D6A;
+}
+
+/* ----------------------------------------------------- */
+
+#phone-heading {
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 18px;
+}
+
+#container1 .section-hr8 {
+    margin-left: 13px;
+    width: 290px;
+    border: 1px solid #0F2D6A;
+}
+
+#container1 #telNoResult {
+    margin-left: 13px;
+}
+
+/* ----------------------------------------------------- */
+
+#container1 #hire-date-heading {
+    margin-left: 19px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#container1 .section-hr9 {
+    margin-left: 17px;
+    width: 255px;
+    border: 1px solid #0F2D6A;
+}
+
+#container1 #empDTResult {
+    margin-left: 20px;
+}
+/* ----------------------------------------------------- */
+#container1 .section-heading2 {
+    font-weight: bold;
+    margin-top: 43px;
+    margin-left: 40px;
+}
+
+#container1 .section-heading2 .required-field {
+    color: red;
+    font-weight: bold;
+    margin-left: 460px;
+    font-size: 13px;
+}
+
+#container1 .section-heading2 p {
+    margin-top: 19px;
+    color: #0F2D6A;
+    font-size: 15.5px;
+    font-weight: bold;
+}
+
+/* ----------------------------------------------------- */
+
+/* 테이블 전체 스타일 */
+#container1 .section-heading2 table,
+#container1 .section-heading3 table {
+    width: 97%;
+    margin-top: 10px;
+}
+
+#container1 .section-heading2 th,
+#container1 .section-heading3 th {
+    border-top: 2px solid #EEEEEE;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid #EEEEEE;
+    font-size: 15.5px;
+    font-weight: bold;
+    padding: 14px;
+    text-align: center;
+}
+
+/* ----------------------------------------------------- */
+td {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    font-size: 15px;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+/* ----------------------------------------------------- */
+
+#container1 .section-heading3 {
+    font-weight: bold;
+    margin-top: 43px;
+    margin-left: 40px;
+}
+
+#container1 .section-heading3 .required-field {
+    color: red;
+    font-weight: bold;
+    margin-left: 936px;
+    font-size: 13px;
+}
+
+.button-box {
+    margin-top: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    width: 139px;
+    height: 55px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0.5em;
+}
+
+.button.main {
+    color: #0F2D6A;
+    border: 1px solid #0F2D6A;
+    margin-right: 8.5px;
+    padding-left: 38px;
+    padding-top: 15px;
+}
+
+.button.change {
+    background-color: #0F2D6A;
+    color: white;
+    padding-left: 38px;
+    padding-top: 15px;
+}
