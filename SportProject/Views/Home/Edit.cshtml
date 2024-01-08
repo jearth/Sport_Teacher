@@ -1,27 +1,33 @@
 ﻿@using SportProject.DTO
+@using System.Text.Json
 @model LeaderInfoDetailDTO;
 @{
     ViewBag.title = "지도자 수정";
     Layout = "../Shared/_Layout.cshtml";
+    var sc = ViewBag.SchoolList;
+    var sp = ViewBag.SportList;
+    var ew = ViewBag.WorkEditList;
+    var ec = ViewBag.CertificateEditList;
 }
 
-<link href="~/css/Register.css" rel="stylesheet" type="text/css">
+<link href="~/css/Edit.css" rel="stylesheet" type="text/css">
 <h4 class="title-heading">지도자 등록하기</h4>
 <div class="container" id="container1">
     <div class="d-flex flex-column align-items-center">
-        <form action="" method="post" id="main_form">
+        <form action="" method="POST" id="main_form">
             <h4 class="section-heading1">1. 일반 현황(2023년 01월 01일 기준)<span class="required-field">* 필수입력값 항목입니다.</span><hr class="section-hr"></h4>
             <div class="container custom-container">
                 <div class="row">
                     <div class="col-sm-3 left-content">
                         <div id="image-container">
                             <label for="file-input" id="image-placeholder">
+                                <img src="@Model.ImageBase" id="ImageBase-data"/>
                                 <div id="upload-button">사진 첨부하기</div>
                             </label>
                             <!--프론트 단에서만 필요-->
-                            <input type="file" id="file-input" accept="image/*" value="@Model.ImageBase">
+                            <input type="file" id="file-input" accept="image/*">
                             <!--컨트롤러로 보낼 데이터-->
-                            <input type="hidden" id="hidden-input" name="ImageBase" value="">
+                            <input type="hidden" id="hidden-input" name="ImageBase">
                             <img id="selected-image" alt="">
                             <p>파일 크기는 MB 이하로 등록해주세요.</p>
                         </div>
@@ -32,7 +38,7 @@
                                 <h8 id="code-heading" class="custom-heading">
                                     식별코드 <span class="highlight-text">*</span>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="@Model.LeaderNo" aria-describedby="button-Leader" name="LeaderNo" required>
+                                        <input type="text" class="form-control" value="@Model.LeaderNo" aria-describedby="button-Leader" name="LeaderNo">
                                         <button class="btn btn-outline-secondary" type="button" id="button-Leader">식별코드검색</button>
                                     </div>
                                 </h8>
@@ -57,7 +63,7 @@
                                     <div class="search-container2">
                                         <p>학교명</p>
                                         <input type="text" id="schoolCodeInput" placeholder="학교명을 입력해주세요.">
-                                        <button id="searchSchoolButton">검색하기</button>
+                                        <button id="searchSchoolButton" type="button">검색하기</button>
                                     </div>
                                     <div id="schoolTable">
                                         <h2>
@@ -77,11 +83,11 @@
                                     <div class="button-box3">
                                         <div class="button delete3" id="cancelSchool">취소하기</div>
                                         <div class="button register3" id="registerSchool">등록하기</div>
-                                        <div id="registerPopup2" class="popup">
+                                        <div id="registerErrorPopup" class="popup">
                                             <h2>선택된 학교 없음</h2>
-                                            <span class="Schoolclose" onclick="closePopup('registerPopup2')">&times;</span>
+                                            <span class="Schoolclose" onclick="closePopup('registerErrorPopup')">&times;</span>
                                             <p>선택된 학교명이 없습니다. </br>학교명을 선택해주시기 바랍니다.</p>
-                                            <button class="confirm">확인</button>
+                                            <button class="confirm" type="button">확인</button>
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +98,7 @@
                                 <h8 id="name-heading" class="custom-heading">
                                     성명<span class="highlight-text">*</span>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="@Model.LeaderName" id="leaderNameResult" name="LeaderName" required>
+                                        <input type="text" class="form-control" value="@Model.LeaderName" id="leaderNameResult" name="LeaderName">
                                     </div>
                                 </h8>
                             </div>
@@ -100,14 +106,14 @@
                                 <h8 id="dob-heading" class="custom-heading">
                                     생년월일<span class="highlight-text">*</span>
                                     <div class="mb-3">
-                                        <input type="date" class="form-control" id="birthdate" value="@Model.Birthday" name="Birthday" required>
+                                        <input type="date" class="form-control" id="birthdate" value="@Model.Birthday.ToString("yyyy-MM-dd")" name="Birthday" required>
                                     </div>
                                 </h8>
                             </div>
                             <div class="col-4 col-sm-4">
                                 <h8 id="gender-heading" class="custom-heading">
                                     성별<span class="highlight-text">*</span>
-                                    <div class="gender-checkboxes">
+                                    <div class="gender-checkboxes" value="@Model.Gender">
                                         <label>
                                             <input type="radio" name="Gender" value="M" checked>
                                             남자
@@ -125,8 +131,19 @@
                                 <h8 id="sport-heading" class="custom-heading">
                                     종목<span class="highlight-text">*</span>
                                     <div class="sport-select">
-                                        <select class="form-select" aria-label="종목을 선택해주세요." id="sport-select-container1" name="SportNo">
+                                        <select class="form-select" id="sport-select-container1" name="SportNo">
                                             <option value="">종목을 선택해주세요.</option>
+                                            @foreach (var sport in sp)
+                                            {
+                                                @if (sport.SportName == Model.SportName)
+                                                {
+                                                    <option value="@sport.SportNo" selected>@sport.SportName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@sport.SportNo">@sport.SportName</option>
+                                                }
+                                            }
                                         </select>
                                     </div>
                                 </h8>
@@ -134,11 +151,11 @@
                             <div class="col-4 col-sm-4">
                                 <h8 id="phone-heading" class="custom-heading">근무지 전화번호</h8><span class="highlight-text">*</span>
                                 <div class="d-inline-flex" id="tel-heading">
-                                    <input type="tel" size="3" name="tel1" class="form-control custom-input" placeholder="063" maxlength="3">
+                                    <input type="tel" size="3" name="tel1" class="form-control custom-input" value="@Model.Tel1" maxlength="3">
                                     <span class="dash">-</span>
-                                    <input type="tel" size="4" name="tel2" class="form-control custom-input" placeholder="1234" maxlength="4">
+                                    <input type="tel" size="4" name="tel2" class="form-control custom-input" value="@Model.Tel2" maxlength="4">
                                     <span class="dash">-</span>
-                                    <input type="tel" size="4" name="tel3" class="form-control custom-input" placeholder="5678" maxlength="4">
+                                    <input type="tel" size="4" name="tel3" class="form-control custom-input" value="@Model.Tel3" maxlength="4">
                                     <input type="hidden" name="TelNo" id="hidden-tel">
                                 </div>
                             </div>
@@ -146,7 +163,7 @@
                                 <h8 id="hire-date-heading" class="custom-heading">
                                     최초채용<span class="highlight-text">*</span>
                                     <div class="mb-3">
-                                        <input type="date" class="form-control" id="hire" data-placeholder="최초채용일을 선택해주세요." name="EmpDT" required>
+                                        <input type="date" class="form-control" id="hire" value="@Model.EmpDT.ToString("yyyy-MM-dd")" name="EmpDT" required>
                                         <p>최초 채용일은 <span class="highlight-text">전라북도 교육청 소속 최초 채용일을</span> 선택해주세요.</p>
                                     </div>
                                 </h8>
@@ -159,69 +176,118 @@
                 2. 근무 이력(전라북도교육청 소속 - 최초 채용일로부터)<span class="required-field">필수입력값 항목입니다.</span><hr class="section-hr">
                 <p>※ 현재 근무 중인 경우 근무 종료일을 입력하지 마십시오.</p>
                 <table id="Employment-History-Table">
-                    <tr>
-                        <th>근무기관</th>
-                        <th>근무시작일</th>
-                        <th>근무종료일</th>
-                        <th>종목</th>
-                    </tr>
-                    <tr class="Employment-History-Tr">
-                        <td><input type="text" class="school-name" placeholder="학교명을 입력해주세요." name="Work[0].WorkPlace"></td>
-                        <td><input type="date" class="form-control" id="start-date" name="Work[0].StartDT" data-placeholder="근무 시작일을 선택해주세요." required></td>
-                        <td><input type="date" class="form-control" id="end-date" name="Work[0].EndDT" data-placeholder="근무 종료일을 선택해주세요." required></td>
-                        <td id="sport-table">
-                            <select class="form-select" aria-label="종목을 선택해주세요." id="sport-select-container2" name="Work[0].SportNo">
-                                <option value="">종목을 선택해주세요.</option>
-                            </select>
-                            <button onclick="addHistoryRow(this)">추가</button>
-                        </td>
-                    </tr>
+                   <thead>
+                        <tr>
+                            <th>근무기관</th>
+                            <th>근무시작일</th>
+                            <th>근무종료일</th>
+                            <th>종목</th>
+                        </tr>
+                   </thead>
+                    <tbody class="historyTable_body">
+                        @for(var i = 0; i < Model.Work.Count(); i++)
+                        {
+                            <tr class="Employment-History-Tr">
+                                <td>
+                                    <input type="text" class="school-name" placeholder="학교명을 입력해주세요." name="Work[0].WorkPlace" value="@Model.Work.ToList()[i].WorkPlace" required>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="start-date" name="Work[0].StartDT" data-placeholder="근무 시작일을 선택해주세요." value="@Model.Work.ToList()[i].StartDT.ToString("yyyy-MM-dd")" required>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="end-date" name="Work[0].EndDT" data-placeholder="근무 종료일을 선택해주세요." value="@Model.Work.ToList()[i].EndDT.ToString("yyyy-MM-dd")" required>
+                                </td>
+                                <td id="sport-table">
+                                    <select class="form-select" aria-label="종목을 선택해주세요." id="sport-select-container2" name="Work[0].SportNo">
+                                        <option value="">종목을 선택해주세요.</option>
+                                        @foreach (var sport in sp)
+                                        {
+                                            @if (sport.SportName == Model.Work.ToList()[i].SportName)
+                                            {
+                                                <option value="@sport.SportNo" selected>@sport.SportName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@sport.SportNo">@sport.SportName</option>
+                                            }
+                                        }
+                                    </select>
+                                    @if (i > 0)
+                                    {
+                                        <button type="button" onclick="HistoryRemoveRow(this)" style="background-color: #969696;">삭제</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" onclick="addHistoryRow()">추가</button>
+                                    }
+                                </td>
+                            </tr>
+                        }                        
+                    </tbody>                    
                 </table>
             </h4>
             <h4 class="section-heading3">
                 3. 자격사항<span class="required-field">필수입력값 항목입니다.</span><hr class="section-hr">
                 <table id="Certificate-Table">
-                    <tr>
-                        <th>자격/면허</th>
-                        <th>자격번호</th>
-                        <th>취득일자</th>
-                        <th>발급기관</th>
-                    </tr>
-                    <tr class="Certificate-Table-Tr">
-                        <td><input type="text" class="qualification" name="Certificate[0].CertificateName" placeholder="자격을 입력해주세요."></td>
-                        <td><input type="text" class="qualification-number" name="Certificate[0].CertificateNumber" placeholder="영문, 숫자만 입력해주세요."></td>
-                        <td>
-                            <input type="date" class="form-control" id="get-date" name="Certificate[0].CertificateDT" data-placeholder="취득일자를 선택해주세요." required>
-                        </td>
-                        <td>
-                            <input type="text" class="origanization-name" placeholder="발급기관을 입력해주세요." name="Certificate[0].Origanization">
-                            <button onclick="addCertificateRow(this)">추가</button>
-                        </td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>자격/면허</th>
+                            <th>자격번호</th>
+                            <th>취득일자</th>
+                            <th>발급기관</th>
+                        </tr>
+                    </thead>
+                    <tbody class="certificateTable_body">
+                        @for(var i = 0; i < Model.Certificate.Count(); i++)
+                        {
+                            <tr class="Certificate-Table-Tr">
+                                <td>
+                                    <input type="text" class="qualification" name="Certificate[0].CertificateName" value="@Model.Certificate.ToList()[i].CertificateName" placeholder="자격을 입력해주세요.">
+                                </td>
+                                <td>
+                                    <input type="text" class="qualification-number" name="Certificate[0].CertificateNumber" value="@Model.Certificate.ToList()[i].CertificateNumber" placeholder="영문, 숫자만 입력해주세요.">
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="get-date" name="Certificate[0].CertificateDT" value="@Model.Certificate.ToList()[i].CertificateDT.ToString("yyyy-MM-dd")" data-placeholder="취득일자를 선택해주세요." required>
+                                </td>
+                                <td>
+                                    <input type="text" class="origanization-name" placeholder="발급기관을 입력해주세요." name="Certificate[0].Origanization" value="@Model.Certificate.ToList()[i].Origanization">
+                                    @if (i > 0) 
+                                    {
+                                        <button type="button" onclick="CertificateRemoveRow(this)" style="background-color: #969696;">삭제</button>
+                                    }
+                                    else 
+                                    {
+                                        <button type="button" onclick="CertificateaddRow(this)">추가</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
             </h4>
             <div class="button-box">
                 <div class="button delete">취소하기</div>
                 <div id="cancelPopup" class="popup">
-                    <h2>지도자 등록 취소</h2>
+                    <h2>지도자 수정 취소</h2>
                     <span class="close" onclick="closePopup('cancelPopup')">&times;</span>
-                    <p>지도자 등록을 취소하시겠습니까? </br> 작성한 내용은 모두 삭제됩니다.</p>
-                    <button class="cancel">취소</button>
-                    <button class="confirm">확인</button>
+                    <p>지도자 수정을 취소하시겠습니까? </br> 수정한 내용은 모두 삭제됩니다.</p>
+                    <button type="button" class="cancel" id="closePopupcancel">취소</button>
+                    <button type="button" class="confirm">확인</button>
                 </div>
-                <div id="register" class="button register" name="submit">등록하기</div>
+                <div id="register" class="button register" name="submit">저장하기</div>
                 <div id="button-register-error" class="popup">
                     <h2>필수입력값 확인</h2>
                     <span class="close" onclick="closePopup('button-register-error')">&times;</span>
                     <p>필수입력값이 채워지지 않았습니다. </br>확인후 채워주시기 바랍니다.</p>
-                    <button class="confirm">확인</button>
+                    <button type="button" class="confirm">확인</button>
                 </div>
                 <div id="button-register-success" class="popup">
-                    <h2>지도자 등록</h2>
+                    <h2>지도자 저장</h2>
                     <span class="close" onclick="closePopup('button-register-success')">&times;</span>
-                    <p>입력한 내용으로 지도자를 등록하시겠습니까?</p>
-                    <button class="cancel">취소</button>
-                    <button id="submitBtn" class="confirm" type="button" onclick="submitData()">확인</button>
+                    <p>수정한 내용으로 지도자를 수정하시겠습니까?</p>
+                    <button type="button" class="cancel">취소</button>
+                    <button class="confirm" type="submit" onclick="document.getElementById('main_form').submit()">확인</button>
                 </div>
             </div>
         </form>
@@ -229,70 +295,381 @@
 </div>
 @section scripts {
     <script>
-         $(document).ready(function () {
-            // URL에서 식별코드 파라미터 읽기
-            var urlParams = new URLSearchParams(window.location.search);
-            var leaderNo = urlParams.get('leaderNo');
+        var sportsOptionTags = '';
 
-            // loadLeaderDetails(leaderNo);
+        // 파일 입력의 변화를 감지하는 이벤트 리스너
+        document.getElementById("file-input").addEventListener("change", function () {
+            // 파일 입력
+            const fileInput = this;
+
+            // 이미지를 표시할 엘리먼트와 선택된 이미지를 표시할 엘리먼트를 가져오기
+            const imagePlaceholder = document.getElementById("image-placeholder");
+            const selectedImage = document.getElementById("selected-image");
+
+            // 만약 파일 입력에 파일이 선택되었다면
+            if (fileInput.files && fileInput.files[0]) {
+
+                // FileReader 객체를 생성하기
+                const reader = new FileReader();
+
+                // 파일 읽기 작업이 완료되면 실행됨
+                reader.onload = function (e) {
+                    // e.target.result에 Data URL이 포함되어 있음!?
+                    const imageDataUrl = e.target.result;
+
+                    // 선택된 이미지 엘리먼트의 src 속성을 읽어온 데이터 URL로 설정함
+                    selectedImage.src = imageDataUrl;
+
+                    // 선택된 이미지를 표시하고 이미지 플레이스홀더를 감춤
+                    selectedImage.style.display = "block";
+                    imagePlaceholder.style.display = "none";
+                };
+
+                // 파일을 Data URL로 변환하여 읽어옴......
+                reader.readAsDataURL(fileInput.files[0]);
+            }
         });
 
-        
+        //---------------------------------------------------
+        var selectedSchoolCode = null;
+        var selectedSchoolName = null;
 
-        // 날짜 형식을 가공하는 함수
-        function formatDate(dateString) {
-            var date = new Date(dateString);
-            var formattedDate = date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate();
-            return formattedDate;
-        }
+        // "검색하기" 버튼 클릭 이벤트
+        document.getElementById('searchSchoolButton').addEventListener('click', function () {
+            var inputText = document.getElementById('schoolCodeInput').value;
+            searchSchoolsLocally(inputText);
+        });
 
-        // 근무이력 테이블
-        function fillHistoryTable(historyData) {
-            var historyStr = '';
-            $.each(historyData, function (i, val) {
-                var formattedStartDT = formatDate(val.startDT); // 날짜 형식 가공
-                var formattedEndDT = formatDate(val.endDT); // 종료일 가공
+        // 검색 함수
+        function renderSchoolTable(data) {
+            var str = '';
+            if (data.length > 0) {
+                data.forEach(function (item, i) {
+                    var number = i + 1;
+                    str += '<tr><td>' + number + '</td><td>' + item.SchoolName + '</td></tr>';
+                });
+            } else {
+                str = '<tr><td colspan="2">검색된 결과가 없습니다.</td></tr>';
+            }
+            document.querySelector('.schoolTable_body').innerHTML = str;
 
-                historyStr += '<tr><td>' + val.workPlace + '</td><td>' + formattedStartDT + '</td><td>' + formattedEndDT + '</td><td>' + val.sportName + '</td></tr>';
+            document.querySelectorAll('.schoolTable_body tr').forEach(function (tr) {
+                tr.addEventListener('click', function () {
+                    document.querySelectorAll('.schoolTable_body tr').forEach(function (row) {
+                        row.style.backgroundColor = '';
+                    });
+                    tr.style.backgroundColor = '#F9F9F9';
+                    clickedSchoolNo = data[tr.rowIndex - 1]?.SchoolNo || '';
+                    var tds = tr.querySelectorAll('td');
+                    selectedSchoolName = tds[1].innerText;
+
+                    updateTotalSchoolsCount(data);
+                });
             });
-            $('.historyTable_body').append(historyStr);
         }
 
-        // 자격사항 테이블
-        function fillCertificateTable(certificateData) {
-            var certificateStr = '';
-            $.each(certificateData, function (i, val) {
-                var formattedCertificateDT = formatDate(val.certificateDT); // 날짜 형식 가공
+        function updateTotalSchoolsCount(data) {
+            document.getElementById('totalSchool').innerText = '총 ' + data.length + '개';
+        }
 
-                certificateStr += '<tr><td>' + val.certificateName + '</td><td>' + val.certificateNumber + '</td><td>' + formattedCertificateDT + '</td><td>' + val.origanization + '</td></tr>';
+        // 엔터 키 감지 이벤트
+        document.getElementById('schoolCodeInput').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                var inputText = document.getElementById('schoolCodeInput').value;
+                searchSchoolsLocally(inputText);
+            }
+        });
+
+        // 등록하기 버튼 클릭 이벤트
+        document.getElementById('registerSchool').addEventListener('click', function () {
+            if (selectedSchoolName) {
+                document.getElementById('school-heading').querySelector('input').value = selectedSchoolName;
+                document.getElementById('hidden-SchoolName').value = clickedSchoolNo;
+                console.log(clickedSchoolNo);
+                SchoolModal.style.display = 'none';
+            } else {
+                openregisterErrorPopup();
+            }
+        });
+
+        // 등록값이 없을 때 뜨는 팝업 창
+        function openregisterErrorPopup() {
+            var popup = document.getElementById('registerErrorPopup');
+            popup.style.display = 'block';
+
+            document.querySelector('#registerErrorPopup .confirm').addEventListener('click', function () {
+                popup.style.display = 'none';
             });
-            $('.certificateTable_body').append(certificateStr);
         }
 
-        // 받아온 데이터를 화면에 표시하는 함수
-        function displayData(data) {
-            // console.log(`data: ${typeof data}`);
-            console.log(`data: ${JSON.stringify(data)}`);
+        // 로컬에서 데이터 검색 함수
+        function searchSchoolsLocally(keyword) {
+            var schoolDataString = '@sc';
 
-            // 이미지 태그
-            $('#leader-image').attr('src', data.imageBase); // 제이쿼리 attr -> 속성값을 가져오거나 변경할 수 있는 함수
+            var replacedStr = schoolDataString.replace(/&quot;/g, '"');
 
-            var birthday = new Date(data.birthday);
-            var empDT = new Date(data.empDT);
+            var schoolData = JSON.parse(replacedStr);
 
-            // 원하는 형식으로 가공하기
-            var formattedbirthday = birthday.getFullYear() + '.' + (birthday.getMonth() + 1) + '.' + birthday.getDate();
-            var formattedempDT = empDT.getFullYear() + '.' + (empDT.getMonth() + 1) + '.' + empDT.getDate();
+            // 검색 로직 적용
+            var searchData = schoolData.filter(function (item) {
+                return item.SchoolName.includes(keyword) || item.SchoolNo.includes(keyword);
+            });
 
-            // 다른 데이터 표시
-            $('#leaderNoResult').text(data.leaderNo);
-            $('#schoolNameResult').text(data.schoolName);
-            $('#leaderNameResult').text(data.leaderName);
-            $('#birthdayResult').text(formattedbirthday);
-            $('#genderResult').text(data.gender);
-            $('#sportNameResult').text(data.sportName);
-            $('#telNoResult').text(data.telNo);
-            $('#empDTResult').text(formattedempDT);
+            // 결과를 렌더링하고 총 지도자 수 업데이트
+            renderSchoolTable(searchData);
+            updateTotalSchoolsCount(searchData);
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var SchoolModal = document.getElementById('SchoolModal');
+            var Schoolbutton = document.getElementById('button-addon-School');
+            var Schoolclose = document.getElementsByClassName('close')[2];
+            var cancelSchools = document.getElementById('cancelSchool');
+
+
+            Schoolbutton.onclick = function () {
+                SchoolModal.style.display = 'block';
+                var inputText = document.getElementById('schoolCodeInput').value;
+                searchSchoolsLocally(inputText);
+            };
+
+            Schoolclose.onclick = function () {
+                SchoolModal.style.display = 'none';
+            };
+            
+            cancelSchools.onclick = function () {
+                SchoolModal.style.display = 'none';
+            };
+
+            // 최초 실행 시에는 전체 데이터를 로컬에서 검색
+            searchSchoolsLocally('');
+        });
+
+        // -----------------------------------------------------------------
+
+        $(document).ready(function () {
+            // 정적인 데이터 사용
+            let Sport = '@JsonSerializer.Serialize(sp)';
+            let SportStr = JSON.parse(Sport.replace(/&quot;/g, '"'));
+
+            // DB 이용하여 옵션 동적으로 추가
+            var optionsHtml = '';
+            $.each(SportStr, function (index, item) {
+                optionsHtml += '<option value="' + item.SportNo + '">' + item.SportName + '</option>';
+            });
+
+            console.log('optionsHtml', optionsHtml);
+            sportsOptionTags = optionsHtml;
+            
+            // 옵션 추가
+            $('#sport-select-container1, #sport-select-container2').append(optionsHtml);
+        });
+
+        // ------------------------------------------------------------------
+
+        function addHistoryRow() {
+            var table = $('#Employment-History-Table');
+            var trIndex = $('.Employment-History-Tr').length;
+
+            // 이전 행의 유효성 검사
+            if (!validateRow(trIndex - 1)) {
+                return; // 유효성 검사 실패 시 추가하지 않음
+            }
+
+            var childTag = `<tr class="Employment-History-Tr">
+                                <td>
+                                    <input type="text" class="school-name" placeholder="학교명을 입력해주세요." name="Work[${trIndex}].WorkPlace">
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="start-date" name="Work[${trIndex}].StartDT" data-placeholder="근무 시작일을 선택해주세요." required>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="end-date" name="Work[${trIndex}].EndDT" data-placeholder="근무 종료일을 선택해주세요." required>
+                                </td>
+                                    <td id="sport-table">
+                                        <select class="form-select" aria-label="종목을 선택해주세요." id="sport-select-container2" name="Work[${trIndex}].SportNo">
+                                            <option value="">종목을 선택해주세요.</option>
+                                             ${sportsOptionTags}
+                                        </select>
+                                        <button onclick="addHistoryRow(this)">추가</button>
+                                    </td>
+                                </tr>`;
+            table.append(childTag);
+
+            // 새로 추가된 행의 추가 버튼을 삭제 버튼으로 변경
+            var newRow = table.find('.Employment-History-Tr:last');
+            newRow.find('button').text('삭제').attr('onclick', 'HistoryRemoveRow(this)').css('background-color', '#969696');
+        }
+
+        function validateRow(index) {
+            var workPlaceInput = $(`.school-name[name^="Work[${index}].WorkPlace"]`);
+            var startDtInput = $(`.form-control[name^="Work[${index}].StartDT"]`);
+            var sportNoSelect = $(`.form-select[name^="Work[${index}].SportNo"]`);
+
+            // 유효성 검사
+            if (workPlaceInput.val() === "" || startDtInput.val() === "" || sportNoSelect.val() === "") {
+                alert("필수 입력값을 모두 입력해주세요.");
+                return false;
+            }
+            return true;
+        }
+
+        function HistoryRemoveRow(button) {
+            // 삭제 버튼 클릭 시 해당 행 삭제
+
+            var row = $(button).closest('tr');
+            row.remove();
+        }
+
+        // ---------------------------------------------------------------
+
+        function CertificateaddRow(button) {
+            var table = $('#Certificate-Table');
+            var trIndex = $('.Certificate-Table-Tr').length;
+
+            // 이전 행의 유효성 검사
+            if (!validateCertificateRow(trIndex - 1)) {
+                return; // 유효성 검사 실패 시 추가하지 않음
+            }
+
+            var childTag = `<tr class="Certificate-Table-Tr">
+                                        <td><input type="text" class="qualification" name="Certificate[${trIndex}].CertificateName" placeholder="자격을 입력해주세요."></td>
+                                        <td><input type="text" class="qualification-number" name="Certificate[${trIndex}].CertificateNumber" placeholder="영문, 숫자만 입력해주세요."></td>
+                                        <td>
+                                            <input type="date" class="form-control" id="get-date" name="Certificate[${trIndex}].CertificateDT" data-placeholder="취득일자를 선택해주세요." required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="origanization-name" placeholder="발급기관을 입력해주세요." name="Certificate[${trIndex}].Origanization">
+                                            <button onclick="addCertificateRow(this)">추가</button>
+                                        </td>
+                                    </tr>`;
+            table.append(childTag);
+
+            var newRow = table.find('.Certificate-Table-Tr:last');
+            newRow.find('button').text('삭제').attr('onclick', 'CertificateRemoveRow(this)').css('background-color', '#969696');
+        }
+
+        function validateCertificateRow(index) {
+            var CertificateNameInput = $(`.qualification[name^="Certificate[${index}].CertificateName"]`);
+            var CertificateNumberInput = $(`.qualification-number[name^="Certificate[${index}].CertificateNumber"]`);
+            var CertificateDTInput = $(`.form-control[name^="Certificate[${index}].CertificateDT"]`);
+            var OriganizationInput = $(`.origanization-name[name^="Certificate[${index}].Origanization"]`);
+
+            // 유효성 검사
+            if (CertificateNameInput.val() === "" || CertificateNumberInput.val() === "" || CertificateDTInput.val() === "" || OriganizationInput.val() === "") {
+                alert("필수 입력값을 모두 입력해주세요.");
+                return false;
+            }
+            return true;
+        }
+
+        function CertificateRemoveRow(button) {
+            // 삭제 버튼 클릭 시 해당 행 삭제
+            var row = $(button).closest('tr');
+            row.remove();
+        }
+
+        // ------------------------------------------------------------------
+
+        // 취소하기 버튼 클릭 시 팝업 띄우기
+        document.querySelector('.button.delete').addEventListener('click', function () {
+            openCancelPopup();
+        });
+
+        function closePopup(popupId) {
+            var popup = document.getElementById(popupId);
+            popup.style.display = 'none';
+        }
+
+        document.getElementById('closePopupcancel').addEventListener('click', function () {
+            closePopup('cancelPopup');
+        });
+
+        // 팝업에서 취소 또는 확인 버튼 클릭 시 동작 정의
+        function openCancelPopup() {
+            // 팝업 열기
+            var popup = document.getElementById('cancelPopup');
+            popup.style.display = 'block';
+
+            document.querySelector('#cancelPopup .confirm').addEventListener('click', handleConfirmClick);
+        }
+
+        // 확인 버튼 클릭 시
+        function handleConfirmClick() {
+            window.location.href = '@Url.Action("Start")';
+        }
+
+        function openSuccessPopup(message) {
+            // 성공 팝업에 확인 버튼 클릭 시
+            document.querySelector('#successPopup .confirm').addEventListener('click', function () {
+                window.location.href = '#';
+            });
+        }
+
+        // ---------------------------------------------------------
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeEventListeners();
+        });
+
+        // 등록하기 버튼 클릭 시 처리 함수
+        function handleRegisterButtonClick() {
+            handleRegistration();
+        }
+
+        // 등록 모달창에서 취소 버튼 클릭 시 모달창 닫기 함수
+        function handleRegisterSuccessCancelClick() {
+            document.getElementById('button-register-success').style.display = 'none';
+        }
+
+        // 오류 모달창에서 확인 버튼 클릭 시 모달창 닫기
+        function closeErrorModal() {
+            document.getElementById('button-register-error').style.display = 'none';
+        }
+
+        function initializeEventListeners() {
+            // 등록하기 버튼 클릭 시 처리
+            document.querySelector('.register').addEventListener('click', handleRegisterButtonClick);
+
+            // 등록 모달창에서 취소 버튼 클릭 시 모달창 닫기
+            document.querySelector('#button-register-success .cancel').addEventListener('click', handleRegisterSuccessCancelClick);
+
+            // 오류 모달창에서 확인 버튼 클릭 시 모달창 닫기
+            document.querySelector('#button-register-error .confirm').addEventListener('click', closeErrorModal);
+        }
+
+        function submitData() {
+            //selected-image
+            let src = $('#selected-image').attr('src');
+
+            //1. 유효성 검사
+            //2. 이미지 바인딩
+            // ~ 이것저것 해야할것 처리
+            $('#hidden-input').val(src);
+            //3. 다 성공하면 submit
+            $('#main_form').submit();
+
+        }
+        // function 유효성검사(){
+        //     //1. 기본정보에 대한 유효성검사
+        //     var test = 기본정보_유효성검사();
+        //     if(!test.status){
+        //         return alert(test.msg);
+        //     }
+        //     //2. 근무이력에 대한 검사
+
+        //     //3. 자격사항에 대한 검사
+        // }
+
+        // function 기본정보_유효성검사(){
+
+        //     //기본정보 유효성 검사 실시
+        //     //1.이름
+        //     //if로 검사~ 진행
+        //     //이름이 공백이다?
+        //     return {status : false, msg : "이름이 공백입니다."};
+
+        //     //return false or true
+        // }
     </script>
 }

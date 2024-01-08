@@ -224,6 +224,9 @@ namespace SportProject.Controllers
             detailDTO.Gender = edits.Gender;
             detailDTO.Birthday = edits.Birthday;
             detailDTO.TelNo = edits.TelNo;
+            //detailDTO.Tel1 = edits.Tel1;
+            //detailDTO.Tel2 = edits.Tel2;
+            //detailDTO.Tel3 = edits.Tel3;
             detailDTO.EmpDT = edits.EmpDT;
             detailDTO.SchoolName = edits.T_School.SchoolName;
             detailDTO.SportName = edits.T_Sport.SportName;
@@ -243,6 +246,8 @@ namespace SportProject.Controllers
                 };
                 detailworkDTOs.Add(detailworkDTO);
             }
+            ViewBag.WorkEditList = JsonSerializer.Serialize(detailworkDTOs);
+
             detailDTO.Work = detailworkDTOs;
 
 
@@ -260,20 +265,53 @@ namespace SportProject.Controllers
                 };
                 detailcertificateDTOs.Add(detailcertificateDTO);
             }
+            ViewBag.CertificateEditList = JsonSerializer.Serialize(detailcertificateDTOs);
+
             detailDTO.Certificate = detailcertificateDTOs;
 
             //ViewBag.leaderInfolistbyleaderno = JsonSerializer.Serialize(detailDTO);
+            // 1. 서비스에 요청해서 필요한 정보 얻어오기
+            var schools = _leaderService.GetSchoolList();
+            
+            // 2. DTO로 변환하기
+            var schoolDTOs = new List<SchoolDTO>();
+            foreach (var sc in schools)
+            {
+                var dto = new SchoolDTO()
+                {
+                    SchoolNo = sc.SchoolNo,
+                    SchoolName = sc.SchoolName
+                };
+                schoolDTOs.Add(dto);
+            }
+            ViewBag.SchoolList = JsonSerializer.Serialize(schoolDTOs);
+
+            // 1. 서비스에 요청해서 필요한 정보 얻어오기
+            var sports = _leaderService.GetSportList();
+
+            // 2. DTO로 변환하기
+            var sportDTOs = new List<SportDTO>();
+            foreach (var sp in sports)
+            {
+                var dto = new SportDTO()
+                {
+                    SportName = sp.SportName,
+                    SportNo = sp.SportNo
+                };
+                sportDTOs.Add(dto);
+            }
+            ViewBag.SportList = sportDTOs;
 
             return View(detailDTO);
         }
 
-        //[HttpPatch]
-        //public IActionResult Edit([FromForm] LeaderInfoDTO leader)
-        //{
-        //    // 1. 디테일에 있는 정보를 가져온다.
-        //    // 2. 수정한다.
-        //    // 3. 저장한다.
-        //    return View("Detail");
-        //}
+        [HttpPatch]
+        public IActionResult Edit([FromForm] LeaderInfoDTO leader)
+        {
+            // 1. 디테일에 있는 정보를 가져온다.
+            // 2. 수정한다.
+            // 3. 저장한다.
+            return View("Detail");
+        }
     }
 }

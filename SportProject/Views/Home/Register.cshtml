@@ -120,9 +120,9 @@
                                     <div class="button-box3">
                                         <div class="button delete3" id="cancelSchool">취소하기</div>
                                         <div class="button register3" id="registerSchool">등록하기</div>
-                                        <div id="registerPopup2" class="popup">
+                                        <div id="registerErrorPopup" class="popup">
                                             <h2>선택된 학교 없음</h2>
-                                            <span class="Schoolclose" onclick="closePopup('registerPopup2')">&times;</span>
+                                            <span class="Schoolclose" onclick="closePopup('registerErrorPopup')">&times;</span>
                                             <p>선택된 학교명이 없습니다. </br>학교명을 선택해주시기 바랍니다.</p>
                                             <button class="confirm">확인</button>
                                         </div>
@@ -309,14 +309,107 @@
         //     //return false or true
         // }
 
+        var selectedLeaderCode = null;
+        var selectedLeaderName = null;
+
+        // "검색하기" 버튼 클릭 이벤트
+        document.getElementById('searchLeaderButton').addEventListener('click', function () {
+            var inputText = document.getElementById('leaderCodeInput').value;
+            searchLeadersLocally(inputText);
+        });
+
+        // 검색 함수
+        function renderLeaderTable(data) {
+            var str = '';
+            if (data.length > 0) {
+                data.forEach(function (item, i) {
+                    var number = i + 1;
+                    str += '<tr><td>' + number + '</td><td>' + item.LeaderName + '</td><td>' + item.LeaderNo + '</td></tr>';
+                });
+            } else {
+                str = '<tr><td colspan="3">검색된 결과가 없습니다.</td></tr>';
+            }
+            document.querySelector('.leaderTable_body').innerHTML = str;
+
+            document.querySelectorAll('.leaderTable_body tr').forEach(function (tr) {
+                tr.addEventListener('click', function () {
+                    document.querySelectorAll('.leaderTable_body tr').forEach(function (row) {
+                        row.style.backgroundColor = '';
+                    });
+                    tr.style.backgroundColor = '#F9F9F9';
+
+                    var tds = tr.querySelectorAll('td');
+                    selectedLeaderCode = tds[2].innerText;
+                    selectedLeaderName = tds[1].innerText;
+
+                    updateTotalLeadersCount(data);
+                });
+            });
+        }
+
+        function updateTotalLeadersCount(data) {
+            document.getElementById('totalLeaders').innerText = '총 ' + data.length + '명';
+        }
+
+        // 엔터 키 감지 이벤트
+        document.getElementById('leaderCodeInput').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                var inputText = document.getElementById('leaderCodeInput').value;
+                searchLeadersLocally(inputText);
+            }
+        });
+
+
+        // 등록하기 버튼 클릭 이벤트
+        document.getElementById('registerleaders').addEventListener('click', function () {
+            if (selectedLeaderCode) {
+                document.getElementById('code-heading').querySelector('input').value = selectedLeaderCode;
+                document.getElementById('name-heading').querySelector('input').value = selectedLeaderName;
+                LeaderModal.style.display = 'none';
+            } else {
+                openregisterPopup1();
+            }
+        });
+
+        // 등록값이 없을 때 뜨는 팝업 창
+        function openregisterPopup1() {
+            var popup = document.getElementById('registerPopup1');
+            popup.style.display = 'block';
+
+            document.querySelector('#registerPopup1 .confirm').addEventListener('click', function () {
+                popup.style.display = 'none';
+            });
+        }
+
+        // 로컬에서 데이터 검색 함수
+        function searchLeadersLocally(keyword) {
+            var leaderDataString = '@ld';
+
+            var replacedStr = leaderDataString.replace(/&quot;/g, '"');
+
+            try {
+                var leaderData = JSON.parse(replacedStr);
+
+                // 검색 로직 적용
+                var searchData = leaderData.filter(function (item) {
+                    return item.LeaderName.includes(keyword) || item.LeaderNo.includes(keyword);
+                });
+
+                // 결과를 렌더링하고 총 지도자 수 업데이트
+                renderLeaderTable(searchData);
+                updateTotalLeadersCount(searchData);
+            } catch (error) {
+                console.error('Error parsing leader data JSON:', error);
+            }
+        }
+
 
         document.addEventListener('DOMContentLoaded', function () {
             var LeaderModal = document.getElementById('LeaderModal');
             var Leaderbutton = document.getElementById('button-Leader');
             var closeBtn = document.getElementsByClassName('close')[0];
             var cancelleaders = document.getElementById('cancelleaders');
-            var selectedLeaderCode = null;
-            var selectedLeaderName = null;
+
 
             Leaderbutton.onclick = function () {
                 LeaderModal.style.display = 'block';
@@ -331,104 +424,105 @@
             cancelleaders.onclick = function () {
                 LeaderModal.style.display = 'none';
             };
-
-            // "검색하기" 버튼 클릭 이벤트
-            document.getElementById('searchLeaderButton').addEventListener('click', function () {
-                var inputText = document.getElementById('leaderCodeInput').value;
-                searchLeadersLocally(inputText);
-            });
-
-            // 엔터 키 감지 이벤트
-            document.getElementById('leaderCodeInput').addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    var inputText = document.getElementById('leaderCodeInput').value;
-                    searchLeadersLocally(inputText);
-                }
-            });
-
-            function openregisterPopup1() {
-                var popup = document.getElementById('registerPopup1');
-                popup.style.display = 'block';
-
-                document.querySelector('#registerPopup1 .confirm').addEventListener('click', function () {
-                    popup.style.display = 'none';
-                });
-            }
-
-            function renderLeaderTable(data) {
-                var str = '';
-                if (data.length > 0) {
-                    data.forEach(function (item, i) {
-                        var number = i + 1;
-                        str += '<tr><td>' + number + '</td><td>' + item.LeaderName + '</td><td>' + item.LeaderNo + '</td></tr>';
-                    });
-                } else {
-                    str = '<tr><td colspan="3">검색된 결과가 없습니다.</td></tr>';
-                }
-                document.querySelector('.leaderTable_body').innerHTML = str;
-
-                document.querySelectorAll('.leaderTable_body tr').forEach(function (tr) {
-                    tr.addEventListener('click', function () {
-                        document.querySelectorAll('.leaderTable_body tr').forEach(function (row) {
-                            row.style.backgroundColor = '';
-                        });
-                        tr.style.backgroundColor = '#F9F9F9';
-
-                        var tds = tr.querySelectorAll('td');
-                        selectedLeaderCode = tds[2].innerText;
-                        selectedLeaderName = tds[1].innerText;
-                    });
-                });
-
-                // 등록하기 버튼 클릭 이벤트
-                document.getElementById('registerleaders').addEventListener('click', function () {
-                    if (selectedLeaderCode) {
-                        document.getElementById('code-heading').querySelector('input').value = selectedLeaderCode;
-                        document.getElementById('name-heading').querySelector('input').value = selectedLeaderName;
-                        LeaderModal.style.display = 'none';
-                    } else {
-                        openregisterPopup1();
-                    }
-                });
-            }
-
-            function updateTotalLeadersCount(data) {
-                document.getElementById('totalLeaders').innerText = '총 ' + data.length + '명';
-            }
-
-            // 로컬에서 데이터 검색 함수
-            function searchLeadersLocally(keyword) {
-                var leaderDataString = '@ld';
-
-                var replacedStr = leaderDataString.replace(/&quot;/g, '"');
-
-                try {
-                    var leaderData = JSON.parse(replacedStr);
-
-                    // 검색 로직 적용
-                    var searchData = leaderData.filter(function (item) {
-                        return item.LeaderName.includes(keyword) || item.LeaderNo.includes(keyword);
-                    });
-
-                    // 결과를 렌더링하고 총 지도자 수 업데이트
-                    renderLeaderTable(searchData);
-                    updateTotalLeadersCount(searchData);
-                } catch (error) {
-                    console.error('Error parsing leader data JSON:', error);
-                }
-            }
-
         });
 
     // -------------------------------------------------------------------
+
+        var selectedSchoolCode = null;
+        var selectedSchoolName = null;
+
+        // "검색하기" 버튼 클릭 이벤트
+        document.getElementById('searchSchoolButton').addEventListener('click', function () {
+            var inputText = document.getElementById('schoolCodeInput').value;
+            searchSchoolsLocally(inputText);
+        });
+
+        // 검색 함수
+        function renderSchoolTable(data) {
+            var str = '';
+            if (data.length > 0) {
+                data.forEach(function (item, i) {
+                    var number = i + 1;
+                    str += '<tr><td>' + number + '</td><td>' + item.SchoolName + '</td></tr>';
+                });
+            } else {
+                str = '<tr><td colspan="2">검색된 결과가 없습니다.</td></tr>';
+            }
+            document.querySelector('.schoolTable_body').innerHTML = str;
+
+            document.querySelectorAll('.schoolTable_body tr').forEach(function (tr) {
+                tr.addEventListener('click', function () {
+                    document.querySelectorAll('.schoolTable_body tr').forEach(function (row) {
+                        row.style.backgroundColor = '';
+                    });
+                    tr.style.backgroundColor = '#F9F9F9';
+                    clickedSchoolNo = data[tr.rowIndex - 1]?.SchoolNo || '';
+                    var tds = tr.querySelectorAll('td');
+                    selectedSchoolName = tds[1].innerText;
+
+                    updateTotalSchoolsCount(data);
+                });
+            });
+        }
+
+        function updateTotalSchoolsCount(data) {
+            document.getElementById('totalSchool').innerText = '총 ' + data.length + '개';
+        }
+
+        // 엔터 키 감지 이벤트
+        document.getElementById('schoolCodeInput').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                var inputText = document.getElementById('schoolCodeInput').value;
+                searchSchoolsLocally(inputText);
+            }
+        });
+
+        // 등록하기 버튼 클릭 이벤트
+        document.getElementById('registerSchool').addEventListener('click', function () {
+            if (selectedSchoolName) {
+                document.getElementById('school-heading').querySelector('input').value = selectedSchoolName;
+                document.getElementById('hidden-SchoolName').value = clickedSchoolNo;
+                console.log(clickedSchoolNo);
+                SchoolModal.style.display = 'none';
+            } else {
+                openregisterErrorPopup();
+            }
+        });
+
+        // 등록값이 없을 때 뜨는 팝업 창
+        function openregisterErrorPopup() {
+            var popup = document.getElementById('registerErrorPopup');
+            popup.style.display = 'block';
+
+            document.querySelector('#registerErrorPopup .confirm').addEventListener('click', function () {
+                popup.style.display = 'none';
+            });
+        }
+
+        // 로컬에서 데이터 검색 함수
+        function searchSchoolsLocally(keyword) {
+            var schoolDataString = '@sc';
+
+            var replacedStr = schoolDataString.replace(/&quot;/g, '"');
+
+            var schoolData = JSON.parse(replacedStr);
+
+            // 검색 로직 적용
+            var searchData = schoolData.filter(function (item) {
+                return item.SchoolName.includes(keyword) || item.SchoolNo.includes(keyword);
+            });
+
+            // 결과를 렌더링하고 총 지도자 수 업데이트
+            renderSchoolTable(searchData);
+            updateTotalSchoolsCount(searchData);
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
             var SchoolModal = document.getElementById('SchoolModal');
             var Schoolbutton = document.getElementById('button-addon-School');
             var Schoolclose = document.getElementsByClassName('close')[2];
             var cancelSchools = document.getElementById('cancelSchool');
-            var selectedSchoolCode = null;
-            var selectedSchoolName = null;
+
 
             Schoolbutton.onclick = function () {
                 SchoolModal.style.display = 'block';
@@ -439,92 +533,10 @@
             Schoolclose.onclick = function () {
                 SchoolModal.style.display = 'none';
             };
-            
+
             cancelSchools.onclick = function () {
                 SchoolModal.style.display = 'none';
             };
-
-            // "검색하기" 버튼 클릭 이벤트
-            document.getElementById('searchSchoolButton').addEventListener('click', function () {
-                var inputText = document.getElementById('schoolCodeInput').value;
-                searchSchoolsLocally(inputText);
-            });
-
-            // 엔터 키 감지 이벤트
-            document.getElementById('schoolCodeInput').addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    var inputText = document.getElementById('schoolCodeInput').value;
-                    searchSchoolsLocally(inputText);
-                }
-            });
-
-            function openregisterPopup2() {
-                var popup = document.getElementById('registerPopup2');
-                popup.style.display = 'block';
-
-                document.querySelector('#registerPopup2 .confirm').addEventListener('click', function () {
-                    popup.style.display = 'none';
-                });
-            }
-
-            function renderSchoolTable(data) {
-                var str = '';
-                if (data.length > 0) {
-                    data.forEach(function (item, i) {
-                        var number = i + 1;
-                        str += '<tr><td>' + number + '</td><td>' + item.SchoolName + '</td></tr>';
-                    });
-                } else {
-                    str = '<tr><td colspan="2">검색된 결과가 없습니다.</td></tr>';
-                }
-                document.querySelector('.schoolTable_body').innerHTML = str;
-
-                document.querySelectorAll('.schoolTable_body tr').forEach(function (tr) {
-                    tr.addEventListener('click', function () {
-                        document.querySelectorAll('.schoolTable_body tr').forEach(function (row) {
-                            row.style.backgroundColor = '';
-                        });
-                        tr.style.backgroundColor = '#F9F9F9';
-                        clickedSchoolNo = data[tr.rowIndex - 1]?.SchoolNo || '';
-                        var tds = tr.querySelectorAll('td');
-                        selectedSchoolName = tds[1].innerText;
-                    });
-                });
-
-                // 등록하기 버튼 클릭 이벤트
-                document.getElementById('registerSchool').addEventListener('click', function () {
-                    if (selectedSchoolName) {
-                        document.getElementById('school-heading').querySelector('input').value = selectedSchoolName;
-                        document.getElementById('hidden-SchoolName').value = clickedSchoolNo;
-                        console.log(clickedSchoolNo);
-                        SchoolModal.style.display = 'none';
-                    } else {
-                        openregisterPopup2();
-                    }
-                });
-            }
-
-            function updateTotalSchoolsCount(data) {
-                document.getElementById('totalSchool').innerText = '총 ' + data.length + '개';
-            }
-
-            // 로컬에서 데이터 검색 함수
-            function searchSchoolsLocally(keyword) {
-                var schoolDataString = '@sc';
-
-                var replacedStr = schoolDataString.replace(/&quot;/g, '"');
-
-                var schoolData = JSON.parse(replacedStr);
-
-                // 검색 로직 적용
-                var searchData = schoolData.filter(function (item) {
-                    return item.SchoolName.includes(keyword) || item.SchoolNo.includes(keyword);
-                });
-
-                // 결과를 렌더링하고 총 지도자 수 업데이트
-                renderSchoolTable(searchData);
-                updateTotalSchoolsCount(searchData);
-            }
 
             // 최초 실행 시에는 전체 데이터를 로컬에서 검색
             searchSchoolsLocally('');
@@ -640,6 +652,7 @@
 
     function deleteHistoryRow(button) {
         // 삭제 버튼 클릭 시 해당 행 삭제
+
         var row = $(button).closest('tr');
         row.remove();
     }
@@ -788,7 +801,6 @@
 
         // 필수 입력값이 모두 채워져 있을 때 등록 모달창 띄우기
         if (
-            
             codeValid &&
             schoolValid &&
             nameValid &&
@@ -889,8 +901,6 @@
 
         return qualificationData;
     }
-
-
 
     // --------------------------------------------------
 

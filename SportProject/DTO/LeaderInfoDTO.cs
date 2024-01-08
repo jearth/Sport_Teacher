@@ -47,6 +47,21 @@ namespace SportProject.DTO
 
         public string TelNo { get; set; }
 
+        public string? Tel1
+        {
+            get { return TelNo?.Split("-")[0] ; }
+        }
+
+        public string? Tel2
+        {
+            get { return TelNo?.Split("-")[1]; }
+        }
+
+        public string? Tel3
+        {
+            get { return TelNo?.Split("-")[2]; }
+        }
+
         public DateTime EmpDT { get; set; }
 
         public IEnumerable<WorkDetailDTO> Work { get; set; }
