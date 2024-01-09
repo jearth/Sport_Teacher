@@ -19,7 +19,10 @@
 
         public DateTime EndDT { get; set; }
 
-        public string SportName { get; set; }
+        public string SportNo { get; set; }
+
+        public string SportName{ get; set; }
+
         // 넘버 추가
     }
 }

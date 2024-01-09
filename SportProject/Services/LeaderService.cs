@@ -17,6 +17,8 @@ namespace SportProject.Services
         IEnumerable<T_User> GetLeaderInfoList();
         T_User GetLeaderInfoListByLeaderNo(string leaderNo);
         T_User SaveUser(LeaderInfoDTO dto);
+        T_User EditUser(LeaderInfoDetailDTO dto);
+
         HttpStatusCode RemoveUser(string[] numbers);
 
     }
@@ -188,13 +190,104 @@ namespace SportProject.Services
             }
         }
 
+        public T_User EditUser(LeaderInfoDetailDTO dto)
+        {
+            var _transaction = _dbContext.Database.BeginTransaction();
+            try
+            {
+                //1. user 테이블 수정
+                var EditUserInfo = _dbContext.T_User
+                                    .Include(r=> r.T_Image)
+                                    .FirstOrDefault(u => u.LeaderNo == dto.LeaderNo);
 
-        //public string GetSportNameByNo(string sportNo)
-        //{
-        //    var sport = _dbContext.T_Sport.Where(r => r.SportNo == sportNo).FirstOrDefault();
-        //    if (sport == null) throw new Exception("해당 종목 없음");
-        //    return sport.SportName;
-        //}
+                if (EditUserInfo == null)
+                    throw new Exception("지도자 정보가 없습니다.");
+
+
+                //추후 SchoolNo 잘 넘기고 삭제 !!!
+                // dto.SchoolNo = "0004";
+                //var existSchool = _dbContext.T_School.FirstOrDefault(r => r.SchoolNo == dto.SchoolNo);
+                //if (existSchool == null)
+                //    throw new Exception("존재하지 않는 학교입니다.");
+
+                EditUserInfo.SchoolNo = dto.SchoolNo;
+
+                EditUserInfo.Birthday = dto.Birthday;
+                EditUserInfo.Gender = dto.Gender;
+                EditUserInfo.SportNo = dto.SportNo;
+                EditUserInfo.TelNo = dto.TelNo;
+                EditUserInfo.EmpDT = dto.EmpDT;
+                _dbContext.T_User.Update(EditUserInfo);
+
+                var img = _dbContext.T_Image.Where(r => r.LeaderNo == dto.LeaderNo).FirstOrDefault();
+                img.Image = dto.ImageBase;
+                _dbContext.T_Image.Update(img);
+
+                // Work 테이블 수정 
+                //1. 기존 정보 삭제
+                var works = _dbContext.T_Work.Where(r => r.LeaderNo == dto.LeaderNo).ToList();
+                _dbContext.T_Work.RemoveRange(works);
+                _dbContext.SaveChanges();
+                //2. dto 만큼 저장
+                var EditWorks = new List<T_Work>();
+
+                foreach (var workinfo in dto.Work)
+                {
+                    var work = new T_Work()
+                    {
+                        LeaderNo = dto.LeaderNo,
+                        StartDT = workinfo.StartDT,
+                        EndDT = workinfo.EndDT,
+                        WorkPlace = workinfo.WorkPlace,
+                        SportNo = workinfo.SportNo
+                    };
+
+                    EditWorks.Add(work);
+                }
+                _dbContext.T_Work.AddRange(EditWorks);
+
+                // Certificate 테이블 수정 
+                //1. 기존 정보 삭제
+                var cers = _dbContext.T_Certificate.Where(r => r.LeaderNo == dto.LeaderNo).ToList();
+                _dbContext.T_Certificate.RemoveRange(cers);
+
+                //2. dto 만큼 저장
+                var EditCertificates = new List<T_Certificate>();
+
+                foreach (var certificateinfo in dto.Certificate)
+                {
+                    var work = new T_Certificate()
+                    {
+                        LeaderNo = dto.LeaderNo,
+                        CertificateName = certificateinfo.CertificateName,
+                        CertificateNumber = certificateinfo.CertificateNumber,
+                        CertificateDT = certificateinfo.CertificateDT,
+                        Origanization = certificateinfo.Origanization
+                    };
+
+                    EditCertificates.Add(work);
+                }
+                _dbContext.T_Certificate.AddRange(EditCertificates);
+
+                _dbContext.SaveChanges();
+                _transaction.Commit();
+                return EditUserInfo;
+
+            }
+            catch (Exception ex)
+            {
+                _transaction.Rollback();
+                throw new Exception("이력 수정 실패했습니다.");
+            }
+        }
+       
     }
 
 }
+
+//public string GetSportNameByNo(string sportNo)
+//{
+//    var sport = _dbContext.T_Sport.Where(r => r.SportNo == sportNo).FirstOrDefault();
+//    if (sport == null) throw new Exception("해당 종목 없음");
+//    return sport.SportName;
+//}

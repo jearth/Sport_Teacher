@@ -37,6 +37,8 @@ namespace SportProject.DTO
 
         public string SchoolName { get; set; }
 
+        public string SchoolNo{ get; set; }
+
         public string LeaderName { get; set; }
 
         public DateTime Birthday { get; set; }
@@ -44,6 +46,8 @@ namespace SportProject.DTO
         public string Gender { get; set; }
 
         public string SportName { get; set; }
+
+        public string SportNo { get; set; }
 
         public string TelNo { get; set; }
 

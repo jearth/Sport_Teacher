@@ -21,13 +21,13 @@
                     <div class="col-sm-3 left-content">
                         <div id="image-container">
                             <label for="file-input" id="image-placeholder">
-                                <img src="@Model.ImageBase" id="ImageBase-data"/>
+                                <img src="@Model.ImageBase" id="ImageBase-data"  />
                                 <div id="upload-button">사진 첨부하기</div>
                             </label>
                             <!--프론트 단에서만 필요-->
                             <input type="file" id="file-input" accept="image/*">
                             <!--컨트롤러로 보낼 데이터-->
-                            <input type="hidden" id="hidden-input" name="ImageBase">
+                            <input type="hidden" id="hidden-input" name="ImageBase" value="@Model.ImageBase">
                             <img id="selected-image" alt="">
                             <p>파일 크기는 MB 이하로 등록해주세요.</p>
                         </div>
@@ -47,7 +47,7 @@
                                 <h8 id="school-heading" class="custom-heading">
                                     학교명<span class="highlight-text">*</span>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" id="schoolcode-heading" value="@Model.SchoolName" aria-label="학교명을 선택해주세요." aria-describedby="button-addon-School" required>
+                                        <input type="text" class="form-control" id="schoolcode-heading" value="@Model.SchoolName" name="SchoolName" aria-label="학교명을 선택해주세요." aria-describedby="button-addon-School" required>
                                         <input type="hidden" id="hidden-SchoolName" name="SchoolNo" />
                                         <button class="btn btn-outline-secondary" type="button" id="button-addon-School">학교명검색</button>
                                     </div>
@@ -287,7 +287,7 @@
                     <span class="close" onclick="closePopup('button-register-success')">&times;</span>
                     <p>수정한 내용으로 지도자를 수정하시겠습니까?</p>
                     <button type="button" class="cancel">취소</button>
-                    <button class="confirm" type="submit" onclick="document.getElementById('main_form').submit()">확인</button>
+                    <button class="confirm" type="submit" onclick="submitForm()">확인</button>
                 </div>
             </div>
         </form>
@@ -319,6 +319,11 @@
 
                     // 선택된 이미지 엘리먼트의 src 속성을 읽어온 데이터 URL로 설정함
                     selectedImage.src = imageDataUrl;
+                    console.log('imageDataUrl: ', imageDataUrl);
+                    console.log('hidden: ', $("#hidden-input"));
+
+                    $("#hidden-input").val(imageDataUrl);
+                    console.log('hidden 2: ', $("#hidden-input").val());
 
                     // 선택된 이미지를 표시하고 이미지 플레이스홀더를 감춤
                     selectedImage.style.display = "block";
@@ -457,8 +462,6 @@
             $.each(SportStr, function (index, item) {
                 optionsHtml += '<option value="' + item.SportNo + '">' + item.SportName + '</option>';
             });
-
-            console.log('optionsHtml', optionsHtml);
             sportsOptionTags = optionsHtml;
             
             // 옵션 추가
@@ -599,25 +602,18 @@
             window.location.href = '@Url.Action("Start")';
         }
 
-        function openSuccessPopup(message) {
-            // 성공 팝업에 확인 버튼 클릭 시
-            document.querySelector('#successPopup .confirm').addEventListener('click', function () {
-                window.location.href = '#';
-            });
-        }
-
         // ---------------------------------------------------------
 
         document.addEventListener('DOMContentLoaded', function () {
             initializeEventListeners();
         });
 
-        // 등록하기 버튼 클릭 시 처리 함수
+        // 저장하기 버튼 클릭 시 처리 함수
         function handleRegisterButtonClick() {
-            handleRegistration();
+            SaveSubmitData();
         }
 
-        // 등록 모달창에서 취소 버튼 클릭 시 모달창 닫기 함수
+        // 저장 모달창에서 취소 버튼 클릭 시 모달창 닫기 함수
         function handleRegisterSuccessCancelClick() {
             document.getElementById('button-register-success').style.display = 'none';
         }
@@ -628,7 +624,7 @@
         }
 
         function initializeEventListeners() {
-            // 등록하기 버튼 클릭 시 처리
+            // 저장하기 버튼 클릭 시 처리
             document.querySelector('.register').addEventListener('click', handleRegisterButtonClick);
 
             // 등록 모달창에서 취소 버튼 클릭 시 모달창 닫기
@@ -638,38 +634,246 @@
             document.querySelector('#button-register-error .confirm').addEventListener('click', closeErrorModal);
         }
 
-        function submitData() {
-            //selected-image
-            let src = $('#selected-image').attr('src');
+        // function saveButtonClicked() {
 
-            //1. 유효성 검사
-            //2. 이미지 바인딩
-            // ~ 이것저것 해야할것 처리
-            $('#hidden-input').val(src);
-            //3. 다 성공하면 submit
-            $('#main_form').submit();
+        //     var form = $('#main_form');
+        //     var formData = form.serialize(); // serialize -> form 안에 담겨있는 data들을 다 가져옴
+        //     if (!isValid(formData)) {
+        //         return;
+        //     };
+        //     form.submit();
+        // }
 
-        }
-        // function 유효성검사(){
-        //     //1. 기본정보에 대한 유효성검사
-        //     var test = 기본정보_유효성검사();
-        //     if(!test.status){
-        //         return alert(test.msg);
+        // function isValid(formData) {
+        //     if (formData.LeaderNo == null) {
+        //         alert('유효하지 않은 식별코드 입니다.')
         //     }
-        //     //2. 근무이력에 대한 검사
 
-        //     //3. 자격사항에 대한 검사
+        //     return true;
         // }
 
-        // function 기본정보_유효성검사(){
+        // 기본정보 유효성 검사 함수
+        function ValidataInfoCode() {
+            // 이미지 유효성 검사 실시
+            var fileInput = document.getElementById('file-input');
+            var selectedImage = document.getElementById('ImageBase-data');
+            var fileValid = fileInput.files.length > 0 || selectedImage.src !== '';
+            var maxFileSizeKB = 1; // 최대 허용 파일 크기 (MB)
+            console.log('Image Valid:', fileValid);
 
-        //     //기본정보 유효성 검사 실시
-        //     //1.이름
-        //     //if로 검사~ 진행
-        //     //이름이 공백이다?
-        //     return {status : false, msg : "이름이 공백입니다."};
+            // 식별 코드 유효성 검사 실시
+            var LeaderCodeInput = document.querySelector('#code-heading input[name="LeaderNo"]').value;
 
-        //     //return false or true
-        // }
+            // 식별 코드가 공백인지 확인
+            if (LeaderCodeInput.trim() === '') {
+                return { status: false, msg: "식별 코드가 공백입니다." };
+            }
+            console.log('LeaderCodeInput: ', LeaderCodeInput);
+
+            // 학교 유효성 검사 실시
+            var SchoolCodeInput = (document.querySelector('#school-heading input[name="SchoolName"]')?.value ?? '').trim(); // 값이 존재하지 않거나 null인 경우 빈 문자열 사용
+            // console.log(typeof SchoolCodeInput); -> object
+
+            // 학교가 공백인지 확인
+            if (SchoolCodeInput.trim() === '') {
+                return { status: false, msg: "학교 코드가 공백입니다." };
+            }
+            console.log('SchoolCodeInput: ', SchoolCodeInput);
+
+            // 이름 유효성 검사 실시
+            var LeaderNameCodeInput = document.querySelector('#name-heading input[name="LeaderName"]').value;
+
+            // 이름이 공백인지 확인
+            if (LeaderNameCodeInput.trim() === '') {
+                return { status: false, msg: "이름 코드가 공백입니다." };
+            }
+            console.log('LeaderNameCodeInput: ', LeaderNameCodeInput);
+
+            // 생년월일 유효성 검사 실시
+            var BirthdayCodeInput = document.querySelector('#dob-heading input[name="Birthday"]').value;
+
+            // 생년월일 공백인지 확인
+            if (BirthdayCodeInput.trim() === '') {
+                return { status: false, msg: "생년월일이 공백입니다." };
+            }
+            console.log('BirthdayCodeInput: ', BirthdayCodeInput);
+
+            // 성별 유효성 검사 실시
+            var GenderCodeInput = (document.querySelector('#gender-heading input[name="Gender"]:checked')?.value ?? '').trim();
+
+            // 성별이 공백인지 확인
+            if (GenderCodeInput.trim() === '') {
+                return { status: false, msg: "성별이 공백입니다." };
+            }
+            console.log('GenderCodeInput: ', GenderCodeInput);
+
+            // 종목 유효성 검사 실시
+            var SportCodeInput = (document.querySelector('#sport-heading select[name="SportNo"]')?.value ?? '').trim();
+
+            // 종목이 공백인지 확인
+            if (SportCodeInput.trim() === '') {
+                return { status: false, msg: "종목이 공백입니다." };
+            }
+            console.log('SportCodeInput: ', SportCodeInput);
+
+            // 전화번호 유효성 검사 실시
+            var Tel1CodeInput = document.querySelector('#tel-heading input[name="tel1"]');
+            var Tel2CodeInput = document.querySelector('#tel-heading input[name="tel2"]');
+            var Tel3CodeInput = document.querySelector('#tel-heading input[name="tel3"]');
+
+            // 전화번호 유효성 검사 실시
+            var telValid =
+                /^\d{3}$/.test(Tel1CodeInput.value.trim()) &&
+                /^\d{4}$/.test(Tel2CodeInput.value.trim()) &&
+                /^\d{4}$/.test(Tel3CodeInput.value.trim());
+
+            // 각 부분의 유효성 검사
+            if (!telValid) {
+                return { status: false, msg: "전화번호를 올바른 형식으로 입력하세요." };
+            }
+
+            // 전화번호를 묶어서 hidden-tel에 설정
+            var hiddenTelInput = document.getElementById('hidden-tel');
+            hiddenTelInput.value = `${Tel1CodeInput.value.trim()}-${Tel2CodeInput.value.trim()}-${Tel3CodeInput.value.trim()}`;
+            console.log('hiddenTelInput: ', hiddenTelInput.value);
+
+            // 최초채용일 유효성 검사 실시
+            var HireCodeInput = document.querySelector('#hire-date-heading input[name="EmpDT"]').value;
+
+            // 최초채용일이 공백인지 확인
+            if (HireCodeInput.trim() === '') {
+                return { status: false, msg: "최초채용일을 선택해주세요." };
+            }
+            console.log('HireCodeInput: ', HireCodeInput);
+
+            // 유효성 검사 통과
+            return { status: true, msg: "유효성 검사 통과" };
+        }
+
+        // 근무이력 유효성 검사 함수
+        function ValidataWorkCode() {
+            var isValid = true;
+
+            // 근무 이력 테이블의 각 행을 돌면서 유효성 검사
+            $(".Employment-History-Tr").each(function (index, element) {
+                console.log("Index:", index);
+                console.log("Element:", element);
+                var WorkPlaceCodeInput = $(this).find(".school-name").val();
+                var StartDTCodeInput = $(this).find(".form-control[id='start-date']").val();
+                var EndDTCodeInput = $(this).find(".form-control[id='end-date']").val();
+                var WorkSportInput = $(this).find(".form-select[name='Work[0].SportNo']").val();
+
+                console.log('WorkPlaceCodeInput:', WorkPlaceCodeInput);
+                console.log('StartDTCodeInput:', StartDTCodeInput);
+                console.log('EndDTCodeInput:', EndDTCodeInput);
+                console.log('WorkSportInput:', WorkSportInput);
+
+                // 근무기관, 근무시작일이 모두 입력되었는지 확인
+                if (WorkPlaceCodeInput.trim() === "" || StartDTCodeInput.trim() === "") {
+                    isValid = false;
+                    alert("근무기관, 근무시작일은 필수 입력값입니다.");
+                    return false;
+                }
+
+                // 근무시작일이 현재 날짜보다 미래인지 확인
+                if (new Date(StartDTCodeInput) > new Date()) {
+                    isValid = false;
+                    alert("근무시작일은 현재 날짜보다 미래일 수 없습니다.");
+                    return false;
+                }
+
+                // 근무종료일이 근무시작일보다 빠른지 확인
+                if (EndDTCodeInput.trim() !== "") {  // 근무종료일이 입력된 경우에만 확인
+                    if (EndDTCodeInput < StartDTCodeInput) {
+                        isValid = false;
+                        alert("근무종료일은 근무시작일보다 빠를 수 없습니다.");
+                        return false;
+                    }
+                }
+            });
+            return isValid;
+        }
+
+        // 자격사항 유효성 검사 함수
+        function ValidataCertificateCode() {
+            var isValid = true;
+
+            // 자격 사항 테이블의 각 행을 돌면서 유효성 검사
+            $(".Certificate-Table-Tr").each(function (index, element) {
+                var CertificateNameCodeInput = $(this).find(".qualification").val();
+                var CertificateNumberCodeInput = $(this).find(".qualification-number").val();
+                var CertificateDateCodeInput = $(this).find(".form-control[id='get-date']").val();
+                var OrganizationCodeInput = $(this).find(".origanization-name").val();
+
+                console.log('CertificateNameCodeInput:', CertificateNameCodeInput);
+                console.log('CertificateNumberCodeInput:', CertificateNumberCodeInput);
+                console.log('CertificateDateCodeInput:', CertificateDateCodeInput);
+                console.log('OrganizationCodeInput:', OrganizationCodeInput);
+
+                // 자격/면허, 자격번호, 취득일자, 발급기관이 모두 입력되었는지 확인
+                if (CertificateNameCodeInput.trim() === "" || CertificateNumberCodeInput.trim() === "" || CertificateDateCodeInput.trim() === "" || OrganizationCodeInput.trim() === "") {
+                    alert("자격/면허, 자격번호, 취득일자, 발급기관은 필수 입력값입니다.");
+                    isValid = false;
+                    return false;
+                }
+
+                // 취득일자가 현재 날짜보다 미래인지 확인
+                if (new Date(CertificateDateCodeInput) > new Date()) {
+                    alert("취득일자는 현재 날짜보다 미래일 수 없습니다.");
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            return isValid;
+        }
+
+        function ValidataCode(){
+            //1. 기본정보에 대한 유효성검사
+            var ValidataInfoResult = ValidataInfoCode();
+
+            // 검사 결과 확인
+            if (!ValidataInfoResult.status) {
+                return false;
+            }
+
+            //2. 근무이력에 대한 검사
+            var ValidataWorkResult = ValidataWorkCode();
+            console.log('ValidataWorkResult', ValidataWorkResult);
+            console.log('!ValidataWorkResult', !ValidataWorkResult);
+            // 검사 결과 확인
+            if (!ValidataWorkResult) {
+                alert('근무이력에 대한 검사가 실패하였습니다.')
+                return false;
+            }
+
+            //3. 자격사항에 대한 검사
+            var ValidataCertificateResult = ValidataCertificateCode();
+
+            // 검사 결과 확인
+            if (!ValidataCertificateResult) {
+                alert('자격사항에 대한 검사가 실패하였습니다.')
+                return false;
+            }
+            return true;
+        }
+
+        function SaveSubmitData() {
+            if (ValidataCode()) {
+                document.getElementById('button-register-success').style.display = 'block';
+            } else {
+                // 필수 입력값이 비어있어 조건을 만족하지 못할 때 오류 모달창 띄우기
+                document.getElementById('button-register-error').style.display = 'block';
+            }
+        }
+
+        // 저장 모달창에서 확인 버튼 함수
+        function submitForm() {
+            var formData = $('#main_form').serialize();
+
+            var form = document.getElementById('main_form');
+
+            form.submit();
+        }
     </script>
 }

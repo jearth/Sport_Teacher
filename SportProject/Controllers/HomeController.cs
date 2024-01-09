@@ -224,9 +224,6 @@ namespace SportProject.Controllers
             detailDTO.Gender = edits.Gender;
             detailDTO.Birthday = edits.Birthday;
             detailDTO.TelNo = edits.TelNo;
-            //detailDTO.Tel1 = edits.Tel1;
-            //detailDTO.Tel2 = edits.Tel2;
-            //detailDTO.Tel3 = edits.Tel3;
             detailDTO.EmpDT = edits.EmpDT;
             detailDTO.SchoolName = edits.T_School.SchoolName;
             detailDTO.SportName = edits.T_Sport.SportName;
@@ -305,13 +302,22 @@ namespace SportProject.Controllers
             return View(detailDTO);
         }
 
-        [HttpPatch]
-        public IActionResult Edit([FromForm] LeaderInfoDTO leader)
+        [HttpPost]
+        public IActionResult Edit([FromForm] LeaderInfoDetailDTO leader)
         {
             // 1. 디테일에 있는 정보를 가져온다.
-            // 2. 수정한다.
-            // 3. 저장한다.
+            var ResultData = _leaderService.EditUser(leader);
+
             return View("Detail");
         }
     }
 }
+
+
+//if (ResultData == null)
+//{
+//    // 적절한 오류 처리를 수행
+//    return RedirectToAction("Detail");
+//}
+
+//_leaderService.SaveChanges();
