@@ -227,7 +227,7 @@ namespace SportProject.Services
                 //1. 기존 정보 삭제
                 var works = _dbContext.T_Work.Where(r => r.LeaderNo == dto.LeaderNo).ToList();
                 _dbContext.T_Work.RemoveRange(works);
-                _dbContext.SaveChanges();
+
                 //2. dto 만큼 저장
                 var EditWorks = new List<T_Work>();
 

@@ -287,27 +287,6 @@
             $('#main_form').submit();
             
         }
-        // function 유효성검사(){
-        //     //1. 기본정보에 대한 유효성검사
-        //     var test = 기본정보_유효성검사();
-        //     if(!test.status){
-        //         return alert(test.msg);
-        //     }
-        //     //2. 근무이력에 대한 검사
-
-        //     //3. 자격사항에 대한 검사
-        // }
-
-        // function 기본정보_유효성검사(){
-
-        //     //기본정보 유효성 검사 실시
-        //     //1.이름
-        //     //if로 검사~ 진행
-        //     //이름이 공백이다?
-        //     return {status : false, msg : "이름이 공백입니다."};
-
-        //     //return false or true
-        // }
 
         var selectedLeaderCode = null;
         var selectedLeaderName = null;
@@ -482,7 +461,6 @@
             if (selectedSchoolName) {
                 document.getElementById('school-heading').querySelector('input').value = selectedSchoolName;
                 document.getElementById('hidden-SchoolName').value = clickedSchoolNo;
-                console.log(clickedSchoolNo);
                 SchoolModal.style.display = 'none';
             } else {
                 openregisterErrorPopup();
@@ -712,7 +690,7 @@
 
     // 등록하기 버튼 클릭 시 처리 함수
     function handleRegisterButtonClick() {
-        handleRegistration();
+        SuccessSave();
     }
 
     // 등록 모달창에서 취소 버튼 클릭 시 모달창 닫기 함수
@@ -736,169 +714,228 @@
         document.querySelector('#button-register-error .confirm').addEventListener('click', closeErrorModal);
     }
 
+    (function ($, window) {
+        $.fn.serializeObject = function () {
+            var obj = null;
 
-    function handleRegistration() {
-        // 이미지 유효성 검사
-        var fileInput = document.getElementById('file-input');
-        var selectedImage = document.getElementById('selected-image');
-        var fileValid = fileInput.files.length > 0;
-        var maxFileSizeKB = 1; // 최대 허용 파일 크기 (MB)
-        //  console.log('Image Valid:', fileValid);
+            try {
+                // this[0].tagName이 form tag일 경우
+                if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
+                    var arr = this.serializeArray();
+                    if (arr) {
+                        obj = {};
+                        workCount = 0;
+                        jQuery.each(arr, function () {
+                            // obj의 key값은 arr의 name, obj의 value는 value값
+                            obj[this.name] = this.value;
+                        });
+                    }
+                }
+            } catch (e) {
+                alert(e.message);
+            } finally { }
 
-        // 식별코드 유효성 검사
-        var codeInput = document.querySelector('#code-heading input');
-        var codeValid = codeInput.value.trim() !== '';
-        // console.log('codeValid:', codeValid);
+            return obj;
+        };
+    })(jQuery, window);
 
-        // 학교명 유효성 검사
-        var schoolInput = document.querySelector('#school-heading input');
-        var schoolValid = schoolInput.value.trim() !== '';
-        // console.log('schoolValid:', schoolValid);
 
-        // 성명 유효성 검사
-        var nameInput = document.querySelector('#name-heading input');
-        var nameValid = nameInput.value.trim() !== '';
-        // console.log('nameValid:', nameValid);
+    // 기본정보 유효성 검사 함수
+    function BasicInfoCheck() {
+        var formData = $('#main_form').serialize();
+        console.log('formData :', formData);
+        var formDataObject = $('#main_form').serializeObject();
+        console.log('formDataObject :', formDataObject);
 
-        // 생년월일 유효성 검사
-        var dobInput = document.querySelector('#dob-heading input');
-        console.log('dobValid:', dobInput.value);
-        var dobValid = dobInput.value.trim() !== '';
+        var str = "";
 
-        // 종목 유효성 검사
-        var sportSelect = document.querySelector('#sport-select-container1');
-        var sportValid = sportSelect.value !== '';
+        if ($.trim(formDataObject.LeaderNo).length == 0) {
+            alert('식별 코드가 공백입니다.');
+            return false;
+        }
 
-        // 근무지 전화번호 유효성 검사
-        var telInput1 = document.querySelector('#tel-heading input[name="tel1"]');
-        var telInput2 = document.querySelector('#tel-heading input[name="tel2"]');
-        var telInput3 = document.querySelector('#tel-heading input[name="tel3"]');
+        if ($.trim(formDataObject.LeaderName).length == 0) {
+            alert('이름이 공백입니다.');
+            return false;
+        }
 
-        var telValid =
-            /^\d{3}$/.test(telInput1.value.trim()) &&
-            /^\d{4}$/.test(telInput2.value.trim()) &&
-            /^\d{4}$/.test(telInput3.value.trim());
+        if ($.trim(formDataObject.SchoolNo).length == 0) {
+            alert('학교가 공백입니다.');
+            return false;
+        }
 
-        // 전화번호를 묶어서 hidden-tel에 설정
-        var hiddenTelInput = document.getElementById('hidden-tel');
-        hiddenTelInput.value = `${telInput1.value.trim()}-${telInput2.value.trim()}-${telInput3.value.trim()}`;
+        if ($.trim(formDataObject.Birthday).length == 0) {
+            alert('생년월일이 공백입니다.');
+            return false;
+        }
 
-        // 최초채용 유효성 검사
-        var hireInput = document.querySelector('#hire-date-heading input');
-        var hireValid = hireInput.value.trim() !== '';
-        console.log('hireValid:', hireValid);
+        if (!$.trim(formDataObject.Gender)) {
+            alert('성별을 선택하세요.');
+            return false;
+        }
 
-        // 고용 기록 테이블에 대한 유효성 검사 이벤트 리스너 추가
-        document.querySelector('#Employment-History-Table button').addEventListener('click', function () {
-            validateEmploymentHistoryTable();
+        if ($('select option:selected').val() == "") {
+            $('select option:selected').focus();
+            alert('종목을 선택하세요.');
+            return false;
+        }
+
+        if ($.trim(formDataObject.tel1).length == 0 || !/^\d+$/.test(formDataObject.tel1)) {
+            alert('전화번호를 입력하세요.');
+            return false;
+        }
+
+        if ($.trim(formDataObject.tel2).length == 0 || !/^\d+$/.test(formDataObject.tel2)) {
+            alert('전화번호를 입력하세요.');
+            return false;
+        }
+
+        if ($.trim(formDataObject.tel3).length == 0 || !/^\d+$/.test(formDataObject.tel3)) {
+            alert('전화번호를 입력하세요.');
+            return false;
+        }
+
+        if ($.trim(formDataObject.EmpDT).length == 0) {
+            alert('최초채용일을 선택해주세요.');
+            return false;
+        }
+
+        return true;
+    }
+
+    // 전화번호 필드 값이 변경될 때 호출되는 함수
+    function updateTelNo() {
+        var tel1 = $('input[name="tel1"]').val();
+        var tel2 = $('input[name="tel2"]').val();
+        var tel3 = $('input[name="tel3"]').val();
+
+        // 조합
+        var telNo = tel1 + '-' + tel2 + '-' + tel3;
+
+        // 값 넣기
+        $('input[name="TelNo"]').val(telNo);
+    }
+
+    // 값이 변경될 때 호출
+    $('input[name="tel1"], input[name="tel2"], input[name="tel3"]').on('input', function () {
+        updateTelNo();
+    });
+
+    // 초기 값으로 updateTelNo 함수 호출
+    $(document).ready(function () {
+        updateTelNo();
+    });
+
+    // 근무이력 유효성 검사 함수
+    function ValidateWorkCode() {
+        var formDataObject = $('#main_form').serializeObject();
+        var isValid = true;
+
+        // 근무 이력 테이블의 각 행을 돌면서 유효성 검사
+        $(".Employment-History-Tr").each(function (index, element) {
+            var workPlace = formDataObject[`Work[${index}].WorkPlace`];
+            var startDT = formDataObject[`Work[${index}].StartDT`];
+            var endDT = formDataObject[`Work[${index}].EndDT`];
+            var sportNo = formDataObject[`Work[${index}].SportNo`];
+
+            // 근무기관, 근무시작일이 모두 입력되었는지 확인
+            if ($.trim(workPlace).length === 0 || $.trim(startDT).length === 0) {
+                isValid = false;
+                alert("근무기관, 근무시작일은 필수 입력값입니다.");
+                return false;
+            }
+
+            // 근무시작일이 현재 날짜보다 미래인지 확인
+            if (new Date(startDT) > new Date()) {
+                isValid = false;
+                alert("근무시작일은 현재 날짜보다 미래일 수 없습니다.");
+                return false;
+            }
+
+            // 근무종료일이 근무시작일보다 빠른지 확인
+            if ($.trim(endDT).length !== 0) {
+                if (new Date(endDT) < new Date(startDT)) {
+                    isValid = false;
+                    alert("근무종료일은 근무시작일보다 빠를 수 없습니다.");
+                    return false;
+                }
+            }
         });
 
-        // 자격증 테이블에 대한 유효성 검사 이벤트 리스너 추가
-        document.querySelector('#Certificate-Table button').addEventListener('click', function () {
-            validateCertificateTable();
+        return isValid;
+    }
+
+
+    // 자격사항 유효성 검사 함수
+    function ValidateCertificateCode() {
+        var formDataObject = $('#main_form').serializeObject();
+        var isValid = true;
+
+        // 자격 사항 테이블의 각 행을 돌면서 유효성 검사
+        $(".Certificate-Table-Tr").each(function (index, element) {
+            var certificateName = formDataObject[`Certificate[${index}].CertificateName`];
+            var certificateNumber = formDataObject[`Certificate[${index}].CertificateNumber`];
+            var certificateDate = formDataObject[`Certificate[${index}].CertificateDT`];
+            var organization = formDataObject[`Certificate[${index}].Origanization`];
+
+            // 자격/면허, 자격번호, 취득일자, 발급기관이 모두 입력되었는지 확인
+            if ($.trim(certificateName).length === 0 || $.trim(certificateNumber).length === 0 || $.trim(certificateDate).length === 0 || $.trim(organization).length === 0) {
+                alert("자격/면허, 자격번호, 취득일자, 발급기관은 필수 입력값입니다.");
+                isValid = false;
+                return false;
+            }
+
+            // 취득일자가 현재 날짜보다 미래인지 확인
+            if (new Date(certificateDate) > new Date()) {
+                alert("취득일자는 현재 날짜보다 미래일 수 없습니다.");
+                isValid = false;
+                return false;
+            }
         });
 
-        // 필수 입력값이 모두 채워져 있을 때 등록 모달창 띄우기
-        if (
-            codeValid &&
-            schoolValid &&
-            nameValid &&
-            dobValid &&
-            telValid &&
-            sportValid &&
-            hireValid &&
-            validateEmploymentHistoryTable() &&
-            validateCertificateTable()
-        ) {
-            // 등록 모달창 띄우기
+        return isValid;
+    }
+
+
+    function InfoCheck() {
+        // 1. 기본정보에 대한 유효성 검사
+        var BasicInfoCheckResult = BasicInfoCheck();
+
+        // 1-1. 기본정보 유효성 검사 확인하기
+        if (!BasicInfoCheckResult){
+            alert('기본정보에 대한 검사가 실패하였습니다.')
+            return false;
+        }
+
+        // 2. 근무이력에 대한 검사
+        var ValidateWorkResult = ValidateWorkCode();
+
+        // 2-1. 검사 결과 확인
+        if (!ValidateWorkResult) {
+            alert('근무이력에 대한 검사가 실패하였습니다.')
+            return false;
+        }
+
+        // 3. 자격사항에 대한 검사
+        var ValidateCertificateResult = ValidateCertificateCode();
+
+        // 3-1. 검사 결과 확인
+        if (!ValidateCertificateResult) {
+            alert('자격사항에 대한 검사가 실패하였습니다.')
+            return false;
+        }
+        return true;
+    }
+
+
+    function SuccessSave() {
+        if (InfoCheck()) {
+            // 조건을 만족할 때 성공 모달창 띄우기
             document.getElementById('button-register-success').style.display = 'block';
-
         } else {
-            // 필수 입력값이 비어있어간 조건을 만족하지 못할 때 오류 모달창 띄우기
+            // 필수 입력값이 비어있어 조건을 만족하지 못할 때 오류 모달창 띄우기
             document.getElementById('button-register-error').style.display = 'block';
         }
-    }
-
-    function validateEmploymentHistoryTable() {
-        var rows = document.querySelectorAll('#Employment-History-Table tr[id^="Employment-History-Tr"]');
-
-        for (var i = 0; i < rows.length; i++) {
-            var inputs = rows[i].querySelectorAll('input');
-
-            var schoolName = inputs[0].value.trim();
-            var startDate = inputs[1].value.trim();
-            var endDate = inputs[2].value.trim();
-            var sport = rows[i].querySelector('select').value;
-
-            if (schoolName === '' || startDate === '' || endDate === '' || sport === '') {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    function validateCertificateTable() {
-        var rows = document.querySelectorAll('#Certificate-Table tr');
-
-        for (var i = 1; i < rows.length; i++) {
-            var inputs = rows[i].querySelectorAll('input');
-
-            var qualification = inputs[0].value.trim();
-            var qualificationNumber = inputs[1].value.trim();
-            var getDate = inputs[2].value.trim();
-            var issuingAuthority = inputs[3].value.trim();
-
-            if (qualification === '' || qualificationNumber === '' || getDate === '' || issuingAuthority === '') {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    function getEmploymentHistoryData() {
-        var employmentHistoryData = [];
-        var rows = document.querySelectorAll('#Employment-History-Table tr[id^="Employment-History-Tr"]');
-
-        for (var i = 0; i < rows.length; i++) {
-            var inputs = rows[i].querySelectorAll('input');
-            var schoolName = inputs[0].value.trim();
-            var startDate = inputs[1].value.trim();
-            var endDate = inputs[2].value.trim();
-            var sport = rows[i].querySelector('select').value;
-
-            employmentHistoryData.push({
-                schoolName: schoolName,
-                startDate: startDate,
-                endDate: endDate,
-                sport: sport
-            });
-        }
-
-        return employmentHistoryData;
-    }
-
-    function getQualificationData() {
-        var qualificationData = [];
-        var rows = document.querySelectorAll('#Certificate-Table tr');
-
-        for (var i = 1; i < rows.length; i++) {
-            var inputs = rows[i].querySelectorAll('input');
-            var qualification = inputs[0].value.trim();
-            var qualificationNumber = inputs[1].value.trim();
-            var getDate = inputs[2].value.trim();
-            var issuingAuthority = inputs[3].value.trim();
-
-            qualificationData.push({
-                qualification: qualification,
-                qualificationNumber: qualificationNumber,
-                getDate: getDate,
-                issuingAuthority: issuingAuthority
-            });
-        }
-
-        return qualificationData;
     }
 
     // --------------------------------------------------

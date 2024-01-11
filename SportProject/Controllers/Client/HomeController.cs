@@ -9,7 +9,7 @@ using SportProject.DTO;
 using SportProject.Services;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace SportProject.Controllers
+namespace SportProject.Controllers.Client
 {
     public class HomeController : Controller
     {
@@ -196,13 +196,13 @@ namespace SportProject.Controllers
                 //실패 메시지 담기
                 return Ok("실패");
             }
-            
+
         }
 
         [HttpPost]
         public IActionResult Register([FromForm] LeaderInfoDTO leader)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _leaderService.SaveUser(leader);
             }
@@ -225,6 +225,8 @@ namespace SportProject.Controllers
             detailDTO.Birthday = edits.Birthday;
             detailDTO.TelNo = edits.TelNo;
             detailDTO.EmpDT = edits.EmpDT;
+            detailDTO.SchoolNo = edits.T_School.SchoolNo;
+            detailDTO.SportNo = edits.T_Sport.SportNo;
             detailDTO.SchoolName = edits.T_School.SchoolName;
             detailDTO.SportName = edits.T_Sport.SportName;
 
@@ -269,7 +271,7 @@ namespace SportProject.Controllers
             //ViewBag.leaderInfolistbyleaderno = JsonSerializer.Serialize(detailDTO);
             // 1. 서비스에 요청해서 필요한 정보 얻어오기
             var schools = _leaderService.GetSchoolList();
-            
+
             // 2. DTO로 변환하기
             var schoolDTOs = new List<SchoolDTO>();
             foreach (var sc in schools)
