@@ -389,10 +389,6 @@
                 var row = $(this).closest('tr');
                 var number = row.find('td:eq(1)').text(); // 사용자 번호가 있는 열의 인덱스를 사용
                 numbersToRemove.push(number);
-                // var row = $(this).closest('tr');
-                // var index = row.index();
-                // tableData.splice(index, 1); // 배열에서 해당 인덱스의 데이터 삭제
-                // row.remove();
             });
 
             //ajax 코드 작성 -> numbersToRemove delete

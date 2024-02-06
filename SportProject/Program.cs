@@ -8,6 +8,19 @@ using SportProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 이거 추가
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<LeaderDbContext>(options =>
 {
@@ -27,6 +40,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors("AllowAll"); // 이거 추가
 
 app.UseAuthorization();
 

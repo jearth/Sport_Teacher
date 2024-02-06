@@ -1,35 +1,6 @@
-﻿using System.Reflection.Metadata;
-using SportProject.Data;
-
-namespace SportProject.DTO
+﻿namespace SportProject.DTO
 {
-    public class LeaderInfoDTO
-    {
-        public string ImageBase { get; set; }
-
-        public string LeaderNo { get; set; }
-
-        public string SchoolNo { get; set; }
-
-        public string LeaderName { get; set; }
-
-        public DateTime Birthday { get; set; }
-
-        public string Gender { get; set; }
-
-        public string SportNo { get; set; }
-
-        public string TelNo { get; set; }
-
-        public DateTime EmpDT { get; set; }
-
-        public IEnumerable<WorkDTO> Work { get; set; }
-
-        public IEnumerable<CertificateDTO> Certificate { get; set; }
-
-    }
-
-    public class LeaderInfoDetailDTO
+    public class LeaderEditDTO
     {
         public string ImageBase { get; set; }
 
@@ -37,7 +8,7 @@ namespace SportProject.DTO
 
         public string SchoolName { get; set; }
 
-        public string SchoolNo{ get; set; }
+        public string SchoolNo { get; set; }
 
         public string LeaderName { get; set; }
 
@@ -53,7 +24,7 @@ namespace SportProject.DTO
 
         public string? Tel1
         {
-            get { return TelNo?.Split("-")[0] ; }
+            get { return TelNo?.Split("-")[0]; }
         }
 
         public string? Tel2
@@ -71,5 +42,9 @@ namespace SportProject.DTO
         public IEnumerable<WorkDetailDTO> Work { get; set; }
 
         public IEnumerable<CertificateDTO> Certificate { get; set; }
+
+        public IEnumerable<SchoolDTO> Schools { get; set; }
+
+        public IEnumerable<SportDTO> Sports { get; set; }
     }
 }

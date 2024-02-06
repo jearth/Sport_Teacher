@@ -59,6 +59,32 @@ namespace SportProject.Controllers.Client
         }
 
         [HttpGet]
+        public List<LeaderDTO> StartInfo()
+        {
+            // 1. 서비스에 요청해서 필요한 정보 얻어오기
+            var infos = _leaderService.GetLeaderInfoList();
+
+            // 2. DTO로 변환하기
+            var leaderDTOs = new List<LeaderDTO>();
+
+            foreach (var li in infos)
+            {
+                var leaderDTO = new LeaderDTO()
+                {
+                    LeaderNo = li.LeaderNo,
+                    LeaderName = li.T_Leader.LeaderName,
+                    SportName = li.T_Sport.SportName,
+                    SchoolName = li.T_School.SchoolName
+                };
+                leaderDTOs.Add(leaderDTO);
+            }
+            ViewBag.LeaderinfoList = JsonSerializer.Serialize(leaderDTOs);
+
+            return leaderDTOs;
+        }
+
+
+        [HttpGet]
         public IActionResult Detail([FromQuery(Name = "leaderNo")] string leaderNo)
         {
             return View();
@@ -177,6 +203,39 @@ namespace SportProject.Controllers.Client
             return View();
         }
 
+        [HttpGet]
+        public LeaderDetailDTO RegisterInfo()
+        {
+            // 1. 서비스에 요청해서 필요한 정보 얻어오기
+            var leaders = _leaderService.GetLeaderList();
+            var schools = _leaderService.GetSchoolList();
+            var sports = _leaderService.GetSportList();
+
+            // 2. DTO로 변환하기
+            var leaderDetailDTO = new LeaderDetailDTO
+            {
+                Leaders = leaders.Select(ld => new LeaderDTO
+                {
+                    LeaderNo = ld.LeaderNo,
+                    LeaderName = ld.LeaderName
+                }).ToList(),
+
+                Schools = schools.Select(sc => new SchoolDTO
+                {
+                    SchoolNo = sc.SchoolNo,
+                    SchoolName = sc.SchoolName
+                }).ToList(),
+
+                Sports = sports.Select(sp => new SportDTO
+                {
+                    SportName = sp.SportName,
+                    SportNo = sp.SportNo
+                }).ToList()
+            };
+
+            return leaderDetailDTO;
+        }
+
         [HttpDelete]
         public IActionResult Remove([FromBody] string[] numbers)
         {
@@ -187,16 +246,27 @@ namespace SportProject.Controllers.Client
             if (result == HttpStatusCode.OK)
             {
                 //성공 메시지 담기
-                return Ok("OK"); // -> 200
+                return Ok(); // -> 200
                 //return NoContent(); // -> 204
                 //return Created() // -> 201
             }
             else
             {
                 //실패 메시지 담기
-                return Ok("실패");
+                return BadRequest();
             }
 
+        }
+
+        [HttpPost]
+        public IActionResult RegisterInfo([FromBody] LeaderInfoDTO leaderData)
+        {
+            if (ModelState.IsValid)
+            {
+               var user =  _leaderService.SaveUser(leaderData);
+               if (user != null) return Ok();
+            }
+            return BadRequest();
         }
 
         [HttpPost]
@@ -304,6 +374,78 @@ namespace SportProject.Controllers.Client
             return View(detailDTO);
         }
 
+        [HttpGet]
+        public LeaderEditDTO EditInfo([FromQuery(Name = "leaderNo")] string leaderNo)
+        {
+            // 1. 서비스에 필요한 정보 얻어오기
+            var edits = _leaderService.GetLeaderInfoListByLeaderNo(leaderNo);
+            var editsports = _leaderService.GetSportList();
+
+            // 2 - 1. DTO로 변환하기(User)
+            var leaderEditDTO = new LeaderEditDTO
+            {
+                ImageBase = edits.T_Image.Image,
+                LeaderNo = edits.T_Leader.LeaderNo,
+                LeaderName = edits.T_Leader.LeaderName,
+                Gender = edits.Gender,
+                Birthday = edits.Birthday,
+                TelNo = edits.TelNo,
+                EmpDT = edits.EmpDT,
+                SchoolNo = edits.T_School.SchoolNo,
+                SportNo = edits.T_Sport.SportNo,
+                SchoolName = edits.T_School.SchoolName,
+                SportName = edits.T_Sport.SportName
+            };
+
+            // 2 - 2. DTO로 변환하기(Work)
+            var workDTOs = edits.T_Work.Select(ew =>
+            {
+                var tSports = editsports.FirstOrDefault(sports => sports.SportNo == ew.SportNo);
+                return new WorkDetailDTO
+                {
+                    WorkPlace = ew.WorkPlace,
+                    EndDT = ew.EndDT,
+                    StartDT = ew.StartDT,
+                    SportName = tSports?.SportName ?? "",
+                    SportNo = ew.SportNo
+                };
+            }).ToList();
+
+            leaderEditDTO.Work = workDTOs;
+
+            // 2 - 3. DTO로 변환하기(Certificate)
+            var certificateDTOs = edits.T_Certificates.Select(ec => new CertificateDTO
+            {
+                CertificateName = ec.CertificateName,
+                CertificateNumber = ec.CertificateNumber,
+                CertificateDT = ec.CertificateDT,
+                Origanization = ec.Origanization
+            }).ToList();
+
+            leaderEditDTO.Certificate = certificateDTOs;
+
+            // 3. 학교 정보 처리
+            var schoolDTOs = _leaderService.GetSchoolList().Select(sc => new SchoolDTO
+            {
+                SchoolNo = sc.SchoolNo,
+                SchoolName = sc.SchoolName
+            }).ToList();
+
+            leaderEditDTO.Schools = schoolDTOs;
+
+            // 4. 스포츠 정보 처리
+            var sportDTOs = _leaderService.GetSportList().Select(sp => new SportDTO
+            {
+                SportName = sp.SportName,
+                SportNo = sp.SportNo
+            }).ToList();
+
+            leaderEditDTO.Sports = sportDTOs;
+
+            return leaderEditDTO;
+        }
+
+
         [HttpPost]
         public IActionResult Edit([FromForm] LeaderInfoDetailDTO leader)
         {
@@ -312,6 +454,20 @@ namespace SportProject.Controllers.Client
 
             return View("Detail");
         }
+
+        [HttpPost]
+        public IActionResult EditInfo([FromBody] LeaderInfoDetailDTO leaderEditInfo)
+        {
+            if (ModelState.IsValid)
+            {            
+                // 1. 디테일에 있는 정보를 가져온다.
+                var user = _leaderService.EditUser(leaderEditInfo);
+                if (user != null) return Ok();
+            }
+
+            return BadRequest();
+        }
+
     }
 }
 
